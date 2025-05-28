@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import '../features/auth/presentation/auth_screen.dart';
 import '../features/auth/presentation/login_screen.dart';
 import '../features/chat/presentation/chat_screen.dart';
-import '../features/events/presentation/events_screen.dart';
 import '../features/matches/presentation/home_screen.dart';
 import '../features/matches/presentation/matches_screen.dart';
 import '../features/onboarding/presentation/onboarding_screen.dart';
@@ -65,11 +64,7 @@ final GoRouter router = GoRouter(
         return _slidePage(state, ChatScreen(chatId: chatId));
       },
     ),
-    GoRoute(
-      path: '/events',
-      name: 'events',
-      pageBuilder: (context, state) => _fadePage(state, const EventsScreen()),
-    ),
+
     GoRoute(
       path: '/profile/:id',
       name: 'profile',

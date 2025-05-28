@@ -50,6 +50,7 @@ dependencies:
   awesome_notifications: ^0.10.1
   flutter_icons_fix: ^1.0.3
   flutter_iconpicker: ^3.3.3
+  google_maps_flutter: ^2.12.2
  
 
 dev_dependencies:
