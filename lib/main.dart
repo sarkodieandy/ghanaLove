@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:ghconnect/lib/app/routes.dart';
 import 'package:provider/provider.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 
-import 'package:ghconnect/app/routes.dart';
-import 'package:ghconnect/core/theme/app_theme.dart';
-import 'package:ghconnect/core/provider/theme_provider.dart';
-import 'package:ghconnect/core/provider/user_provider.dart';
+import 'core/provider/theme_provider.dart';
+import 'core/provider/user_provider.dart';
+import 'core/theme/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ghconnect/core/constants/app_strings.dart';
-import 'package:ghconnect/core/services/notification_service.dart';
-import 'package:ghconnect/core/widgets/profile_card.dart';
+
+import '../../../core/constants/app_strings.dart';
+import '../../../core/services/notification_service.dart';
+import '../../../core/widgets/profile_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
