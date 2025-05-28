@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ghconnect/core/constants/app_strings.dart';
 import 'package:ghconnect/core/services/notification_service.dart';
-import 'package:ghconnect/core/widgets/custom_button.dart';
 import 'package:ghconnect/core/widgets/profile_card.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -41,9 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
 
   void _onTabTapped(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
+    setState(() => _currentIndex = index);
 
     switch (index) {
       case 0:
@@ -53,28 +50,36 @@ class _HomeScreenState extends State<HomeScreen> {
         context.go('/matches');
         break;
       case 2:
-        context.go('/chat/1'); // Example chat ID
+        context.go('/chat/1');
         break;
       case 3:
         context.go('/events');
         break;
       case 4:
-        context.go('/profile');
+        context.go('/profile/1');
         break;
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         title: Text(
           AppStrings.discover,
-          style: Theme.of(context).textTheme.displaySmall,
+          style: theme.textTheme.displaySmall?.copyWith(
+            color: Theme.of(context).colorScheme.onPrimary,
+          ),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.notifications_active),
+            icon: Icon(
+              Icons.notifications_active,
+              color: Theme.of(context).colorScheme.onPrimary,
+            ),
             onPressed: () {
               NotificationService.showSimpleNotification(
                 title: '💘 New Match!',
@@ -83,7 +88,10 @@ class _HomeScreenState extends State<HomeScreen> {
             },
           ),
           IconButton(
-            icon: const Icon(Icons.filter_alt),
+            icon: Icon(
+              Icons.filter_alt,
+              color: Theme.of(context).colorScheme.onPrimary,
+            ),
             onPressed: () {
               // Show filters
             },
@@ -119,7 +127,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 FloatingActionButton(
                   heroTag: 'pass',
                   onPressed: () {},
-                  backgroundColor: Colors.white,
+                  backgroundColor: theme.colorScheme.surface,
                   child: const Icon(Icons.close, color: Colors.red),
                 ),
                 FloatingActionButton(
@@ -130,7 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       body: 'You super liked Esi!',
                     );
                   },
-                  backgroundColor: Colors.white,
+                  backgroundColor: theme.colorScheme.surface,
                   child: const Icon(Icons.star, color: Colors.blue),
                 ),
                 FloatingActionButton(
@@ -141,69 +149,71 @@ class _HomeScreenState extends State<HomeScreen> {
                       body: 'You liked Ama\'s profile!',
                     );
                   },
-                  backgroundColor: Colors.white,
+                  backgroundColor: theme.colorScheme.surface,
                   child: const Icon(Icons.favorite, color: Colors.green),
                 ),
               ],
             ),
           ),
-          Positioned(
-            top: 16,
-            left: 0,
-            right: 0,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              margin: const EdgeInsets.symmetric(horizontal: 24),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 8,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  const Icon(Icons.workspace_premium, color: Colors.amber),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      AppStrings.premiumBanner,
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  ),
-                  CustomButton(
-                    text: 'Upgrade',
-                    onPressed: () {
-                      context.go('/premium');
-                    },
-                    isPrimary: false,
-                    width: 80,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        type: BottomNavigationBarType.fixed,
-        onTap: _onTabTapped,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Matches'),
-          BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chat'),
-          BottomNavigationBarItem(icon: Icon(Icons.event), label: 'Events'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-        ],
+      bottomNavigationBar: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+        decoration: BoxDecoration(
+          color: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.08),
+              blurRadius: 10,
+              offset: const Offset(0, -2),
+            ),
+          ],
+        ),
+        child: BottomNavigationBar(
+          currentIndex: _currentIndex,
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          selectedItemColor: Theme.of(
+            context,
+          ).bottomNavigationBarTheme.selectedItemColor,
+          unselectedItemColor: Theme.of(
+            context,
+          ).bottomNavigationBarTheme.unselectedItemColor,
+          onTap: (index) {
+            setState(() => _currentIndex = index);
+            _onTabTapped(index);
+          },
+          items: List.generate(5, (index) {
+            const icons = [
+              Icons.home,
+              Icons.favorite,
+              Icons.chat,
+              Icons.event,
+              Icons.person,
+            ];
+            const labels = ['Home', 'Matches', 'Chat', 'Events', 'Profile'];
+
+            return BottomNavigationBarItem(
+              label: labels[index],
+              icon: TweenAnimationBuilder<double>(
+                duration: const Duration(milliseconds: 300),
+                tween: Tween<double>(
+                  begin: 1.0,
+                  end: _currentIndex == index ? 1.2 : 1.0,
+                ),
+                curve: Curves.easeOutBack,
+                builder: (context, scale, child) {
+                  return Transform.scale(
+                    scale: scale,
+                    child: Icon(icons[index]),
+                  );
+                },
+              ),
+            );
+          }),
+        ),
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../constants/app_colors.dart';
 
 class ProfileCard extends StatelessWidget {
   final String name;
@@ -40,10 +41,10 @@ class ProfileCard extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(24),
-            color: Colors.white,
+            color: AppColors.primaryBlack, // ✅ Always black card background
             boxShadow: [
               BoxShadow(
-                color: Colors.black12,
+                color: Colors.black.withOpacity(0.3),
                 blurRadius: 12,
                 offset: const Offset(0, 8),
               ),
@@ -73,6 +74,7 @@ class ProfileCard extends StatelessWidget {
                       Text(
                         '$name, $age',
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -82,21 +84,28 @@ class ProfileCard extends StatelessWidget {
                           const Icon(
                             Icons.location_on,
                             size: 16,
-                            color: Colors.grey,
+                            color: Colors.white70, // ✅ Light white icon
                           ),
                           const SizedBox(width: 4),
                           Expanded(
                             child: Text(
                               location,
                               style: Theme.of(context).textTheme.bodyMedium
-                                  ?.copyWith(color: Colors.grey[700]),
+                                  ?.copyWith(
+                                    color: Colors.white70, // ✅ Lighter white
+                                  ),
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         ],
                       ),
                       const SizedBox(height: 8),
-                      Text(bio, style: Theme.of(context).textTheme.bodyLarge),
+                      Text(
+                        bio,
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          color: Colors.white, // ✅ White bio
+                        ),
+                      ),
                     ],
                   ),
                 ),

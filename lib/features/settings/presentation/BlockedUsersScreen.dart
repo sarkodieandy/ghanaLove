@@ -8,7 +8,7 @@ class BlockedUsersScreen extends StatefulWidget {
 }
 
 class _BlockedUsersScreenState extends State<BlockedUsersScreen> {
-  List<Map<String, dynamic>> _blockedUsers = [
+  final List<Map<String, dynamic>> _blockedUsers = [
     {'name': 'Ama Serwaa', 'avatar': 'https://i.pravatar.cc/150?img=1'},
     {'name': 'Kwame Nkrumah', 'avatar': 'https://i.pravatar.cc/150?img=2'},
     {'name': 'Nana Aba', 'avatar': 'https://i.pravatar.cc/150?img=3'},
@@ -44,7 +44,7 @@ class _BlockedUsersScreenState extends State<BlockedUsersScreen> {
               itemBuilder: (context, index) {
                 final user = _blockedUsers[index];
                 return ListTile(
-                  tileColor: color.surfaceVariant.withOpacity(0.3),
+                  tileColor: color.surfaceContainerHighest.withOpacity(0.3),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),

@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
+
 import 'package:ghconnect/core/constants/app_strings.dart';
 import 'package:ghconnect/core/widgets/custom_button.dart';
 import 'package:ghconnect/core/provider/theme_provider.dart';
+import 'package:ghconnect/core/provider/user_provider.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -32,14 +34,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
+    final userProvider = Provider.of<UserProvider>(context);
     final colorScheme = Theme.of(context).colorScheme;
+    final isDark = themeProvider.isDarkMode;
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_rounded, size: 28),
-          onPressed: () => context.go('/profile'),
-        ),
         title: Text(
           'Settings',
           style: Theme.of(
@@ -53,93 +53,59 @@ class _SettingsScreenState extends State<SettingsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Account Section
-            _SectionHeader(
-              title: AppStrings.account,
-              icon: Icons.account_circle_rounded,
+            // Sections
+            _buildSectionHeader(
+              context,
+              AppStrings.account,
+              Icons.account_circle_rounded,
             ),
-            const SizedBox(height: 8),
-            Card(
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-                side: BorderSide(
-                  color: colorScheme.outline.withOpacity(0.2),
-                  width: 1,
-                ),
+            _buildSettingsCard([
+              _SettingsTile(
+                icon: Icons.lock_rounded,
+                iconColor: colorScheme.primary,
+                title: 'Change Password',
+                onTap: () => context.push('/settings/password'),
               ),
-              child: Column(
-                children: [
-                  _SettingsTile(
-                    icon: Icons.lock_rounded,
-                    iconColor: colorScheme.primary,
-                    title: 'Change Password',
-                    onTap: () => context.push('/settings/password'),
-                  ),
-                  const Divider(height: 1, indent: 56),
-                  _SettingsTile(
-                    icon: Icons.money_rounded,
-                    iconColor: Colors.green,
-                    title: 'Mobile Money Settings',
-                    onTap: () => context.push('/settings/momo'),
-                  ),
-                ],
+              _divider(),
+              _SettingsTile(
+                icon: Icons.money_rounded,
+                iconColor: Colors.green,
+                title: 'Mobile Money Settings',
+                onTap: () => context.push('/settings/momo'),
               ),
-            ),
-            const SizedBox(height: 24),
+            ], isDark),
 
-            // Privacy Section
-            _SectionHeader(
-              title: AppStrings.privacy,
-              icon: Icons.privacy_tip_rounded,
-            ),
-            const SizedBox(height: 8),
-            Card(
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-                side: BorderSide(
-                  color: colorScheme.outline.withOpacity(0.2),
-                  width: 1,
-                ),
-              ),
-              child: Column(
-                children: [
-                  _SettingsTile(
-                    icon: Icons.visibility_rounded,
-                    iconColor: Colors.blue,
-                    title: 'Profile Visibility',
-                    subtitle: 'Public',
-                    onTap: () => context.push('/settings/visibility'),
-                  ),
-                  const Divider(height: 1, indent: 56),
-                  _SettingsTile(
-                    icon: Icons.block_rounded,
-                    iconColor: Colors.red,
-                    title: 'Blocked Users',
-                    onTap: () => context.push('/settings/blocked'),
-                  ),
-                ],
-              ),
-            ),
             const SizedBox(height: 24),
-
-            // Notifications Section
-            _SectionHeader(
-              title: AppStrings.notifications,
-              icon: Icons.notifications_rounded,
+            _buildSectionHeader(
+              context,
+              AppStrings.privacy,
+              Icons.privacy_tip_rounded,
             ),
-            const SizedBox(height: 8),
-            Card(
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-                side: BorderSide(
-                  color: colorScheme.outline.withOpacity(0.2),
-                  width: 1,
-                ),
+            _buildSettingsCard([
+              _SettingsTile(
+                icon: Icons.visibility_rounded,
+                iconColor: Colors.blue,
+                title: 'Profile Visibility',
+                subtitle: 'Public',
+                onTap: () => context.push('/settings/visibility'),
               ),
-              child: _SettingsTile(
+              _divider(),
+              _SettingsTile(
+                icon: Icons.block_rounded,
+                iconColor: Colors.red,
+                title: 'Blocked Users',
+                onTap: () => context.push('/settings/blocked'),
+              ),
+            ], isDark),
+
+            const SizedBox(height: 24),
+            _buildSectionHeader(
+              context,
+              AppStrings.notifications,
+              Icons.notifications_rounded,
+            ),
+            _buildSettingsCard([
+              _SettingsTile(
                 icon: Icons.notifications_active_rounded,
                 iconColor: Colors.deepOrange,
                 title: 'Enable Notifications',
@@ -152,23 +118,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   activeColor: colorScheme.primary,
                 ),
               ),
-            ),
-            const SizedBox(height: 24),
+            ], isDark),
 
-            // Language Section
-            _SectionHeader(
-              title: AppStrings.language,
-              icon: Icons.language_rounded,
+            const SizedBox(height: 24),
+            _buildSectionHeader(
+              context,
+              AppStrings.language,
+              Icons.language_rounded,
             ),
-            const SizedBox(height: 8),
             Card(
               elevation: 0,
+              color: isDark ? Colors.grey[900] : null,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
-                side: BorderSide(
-                  color: colorScheme.outline.withOpacity(0.2),
-                  width: 1,
-                ),
+                side: BorderSide(color: colorScheme.outline.withOpacity(0.2)),
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -193,50 +156,37 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
               ),
             ),
-            const SizedBox(height: 24),
 
-            // Theme Section
-            _SectionHeader(
-              title: AppStrings.theme,
-              icon: Icons.brightness_6_rounded,
+            const SizedBox(height: 24),
+            _buildSectionHeader(
+              context,
+              AppStrings.theme,
+              Icons.brightness_6_rounded,
             ),
-            const SizedBox(height: 8),
-            Card(
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-                side: BorderSide(
-                  color: colorScheme.outline.withOpacity(0.2),
-                  width: 1,
-                ),
-              ),
-              child: _SettingsTile(
-                icon: themeProvider.isDarkMode
+            _buildSettingsCard([
+              _SettingsTile(
+                icon: isDark
                     ? Icons.dark_mode_rounded
                     : Icons.light_mode_rounded,
-                iconColor: themeProvider.isDarkMode
-                    ? Colors.indigo
-                    : Colors.amber,
+                iconColor: isDark ? Colors.indigo : Colors.amber,
                 title: 'Dark Mode',
                 trailing: Switch(
-                  value: themeProvider.isDarkMode,
+                  value: isDark,
                   onChanged: (value) => themeProvider.toggleTheme(value),
                   activeColor: colorScheme.primary,
                 ),
               ),
-            ),
-            const SizedBox(height: 24),
+            ], isDark),
 
-            // Help & Support
+            const SizedBox(height: 24),
             _SettingsTile(
               icon: Icons.help_center_rounded,
               iconColor: Colors.blueAccent,
               title: AppStrings.helpSupport,
-              onTap: () => context.push('/support'),
+              onTap: () => context.push('/settings/help'),
             ),
-            const SizedBox(height: 32),
 
-            // Save Button
+            const SizedBox(height: 32),
             CustomButton(
               text: AppStrings.saveChanges,
               icon: Icons.save_rounded,
@@ -250,7 +200,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                   ),
                 );
-                context.go('/profile');
+
+                // 🔁 Navigate to dynamic profile screen
+                final userId = userProvider.userId;
+                context.go('/profile/$userId');
               },
             ),
           ],
@@ -258,16 +211,26 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
     );
   }
-}
 
-class _SectionHeader extends StatelessWidget {
-  final String title;
-  final IconData icon;
+  Widget _buildSettingsCard(List<Widget> children, bool isDark) {
+    return Card(
+      elevation: 0,
+      color: isDark ? Colors.grey[900] : null,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(
+          color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+        ),
+      ),
+      child: Column(children: children),
+    );
+  }
 
-  const _SectionHeader({required this.title, required this.icon});
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildSectionHeader(
+    BuildContext context,
+    String title,
+    IconData icon,
+  ) {
     return Row(
       children: [
         Icon(icon, size: 20, color: Theme.of(context).colorScheme.primary),
@@ -281,6 +244,8 @@ class _SectionHeader extends StatelessWidget {
       ],
     );
   }
+
+  Widget _divider() => const Divider(height: 1, indent: 56);
 }
 
 class _SettingsTile extends StatelessWidget {
@@ -302,6 +267,8 @@ class _SettingsTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 16),
       leading: Container(
@@ -315,15 +282,18 @@ class _SettingsTile extends StatelessWidget {
       ),
       title: Text(
         title,
-        style: Theme.of(
-          context,
-        ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w500),
+        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+          fontWeight: FontWeight.w500,
+          color: isDark ? Colors.white : Colors.black,
+        ),
       ),
       subtitle: subtitle != null
           ? Text(
               subtitle!,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                color: isDark
+                    ? const Color.fromARGB(179, 26, 22, 22)
+                    : Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
               ),
             )
           : null,

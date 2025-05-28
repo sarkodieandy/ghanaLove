@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/widgets/custom_button.dart';
+import '../../../core/constants/app_colors.dart';
 
 class EventsScreen extends StatefulWidget {
   const EventsScreen({super.key});
@@ -37,31 +38,41 @@ class _EventsScreenState extends State<EventsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(onPressed: () => context.go('/home')),
+        leading: BackButton(
+          onPressed: () => context.go('/home'),
+          color: Colors.white, // ensure icon is white
+        ),
         title: Text(
           AppStrings.upcomingEvents,
-          style: Theme.of(context).textTheme.displaySmall,
+          style: theme.textTheme.displaySmall?.copyWith(color: Colors.white),
         ),
+        backgroundColor: AppColors.primaryBlack, // make appbar dark
         actions: [
           IconButton(
-            icon: const Icon(Icons.filter_alt),
+            icon: const Icon(Icons.filter_alt, color: Colors.white),
             onPressed: () {
               // Show filters
             },
           ),
         ],
       ),
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: ListView.builder(
         padding: const EdgeInsets.all(16),
         itemCount: _events.length,
         itemBuilder: (context, index) {
+          final event = _events[index];
           return Card(
             margin: const EdgeInsets.only(bottom: 16),
+            color: AppColors.primaryBlack, // ✅ black card background
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
+            elevation: 4,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -70,7 +81,7 @@ class _EventsScreenState extends State<EventsScreen> {
                     top: Radius.circular(12),
                   ),
                   child: Image.asset(
-                    _events[index]['image'],
+                    event['image'],
                     height: 150,
                     fit: BoxFit.cover,
                   ),
@@ -81,31 +92,61 @@ class _EventsScreenState extends State<EventsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        _events[index]['title'],
-                        style: Theme.of(context).textTheme.titleLarge,
+                        event['title'],
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          color: Colors.white, // ✅ white text
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       const SizedBox(height: 8),
                       Row(
                         children: [
-                          const Icon(Icons.calendar_today, size: 16),
+                          const Icon(
+                            Icons.calendar_today,
+                            size: 16,
+                            color: Colors.white,
+                          ),
                           const SizedBox(width: 8),
-                          Text(_events[index]['date']),
+                          Text(
+                            event['date'],
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: Colors.white,
+                            ),
+                          ),
                         ],
                       ),
                       const SizedBox(height: 4),
                       Row(
                         children: [
-                          const Icon(Icons.location_on, size: 16),
+                          const Icon(
+                            Icons.location_on,
+                            size: 16,
+                            color: Colors.white,
+                          ),
                           const SizedBox(width: 8),
-                          Text(_events[index]['location']),
+                          Text(
+                            event['location'],
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: Colors.white,
+                            ),
+                          ),
                         ],
                       ),
                       const SizedBox(height: 4),
                       Row(
                         children: [
-                          const Icon(Icons.monetization_on, size: 16),
+                          const Icon(
+                            Icons.monetization_on,
+                            size: 16,
+                            color: Colors.white,
+                          ),
                           const SizedBox(width: 8),
-                          Text(_events[index]['price']),
+                          Text(
+                            event['price'],
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: Colors.white,
+                            ),
+                          ),
                         ],
                       ),
                       const SizedBox(height: 16),
@@ -114,6 +155,7 @@ class _EventsScreenState extends State<EventsScreen> {
                         onPressed: () {
                           // Join event logic
                         },
+                        isPrimary: true,
                       ),
                     ],
                   ),

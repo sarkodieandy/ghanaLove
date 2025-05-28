@@ -6,6 +6,7 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:ghconnect/app/routes.dart';
 import 'package:ghconnect/core/theme/app_theme.dart';
 import 'package:ghconnect/core/provider/theme_provider.dart';
+import 'package:ghconnect/core/provider/user_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,12 +31,7 @@ void main() async {
     }
   });
 
-  runApp(
-    ChangeNotifierProvider(
-      create: (_) => ThemeProvider(),
-      child: const GhanaLoveApp(),
-    ),
-  );
+  runApp(const GhanaLoveApp());
 }
 
 class GhanaLoveApp extends StatelessWidget {
@@ -43,45 +39,44 @@ class GhanaLoveApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return OrientationBuilder(
-          builder: (context, orientation) {
-            return Consumer<ThemeProvider>(
-              builder: (context, themeProvider, _) {
-                return MaterialApp.router(
-                  title: 'GhanaLove',
-                  debugShowCheckedModeBanner: false,
-                  theme: AppTheme.lightTheme,
-                  darkTheme: AppTheme.darkTheme,
-                  themeMode: themeProvider.themeMode,
-                  routerConfig: router,
-                  builder: (context, child) {
-                    // Wrap in MediaQuery to ensure responsive sizing
-                    final data = MediaQuery.of(context);
-                    return MediaQuery(
-                      data: data.copyWith(
-                        textScaleFactor: data.textScaleFactor.clamp(1.0, 1.1),
-                      ),
-                      child: child!,
-                    );
-                  },
-                  localizationsDelegates: const [
-                    GlobalMaterialLocalizations.delegate,
-                    GlobalWidgetsLocalizations.delegate,
-                    GlobalCupertinoLocalizations.delegate,
-                  ],
-                  supportedLocales: const [
-                    Locale('en', ''),
-                    Locale('ak', ''),
-                    Locale('ga', ''),
-                  ],
-                );
-              },
-            );
-          },
-        );
-      },
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => UserProvider()), // ✅ User state
+      ],
+      child: Consumer<ThemeProvider>(
+        builder: (context, themeProvider, _) {
+          return MaterialApp.router(
+            title: 'GhanaLove',
+            debugShowCheckedModeBanner: false,
+            theme: AppTheme.lightTheme,
+            darkTheme: AppTheme.darkTheme,
+            themeMode: themeProvider.themeMode,
+            routerConfig: router,
+            builder: (context, child) {
+              final data = MediaQuery.of(context);
+              return MediaQuery(
+                data: data.copyWith(
+                  textScaler: TextScaler.linear(
+                    data.textScaleFactor.clamp(1.0, 1.1),
+                  ),
+                ),
+                child: child!,
+              );
+            },
+            localizationsDelegates: const [
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: const [
+              Locale('en', ''), // English
+              Locale('ak', ''), // Twi (Akan)
+              Locale('ga', ''), // Ga
+            ],
+          );
+        },
+      ),
     );
   }
 }

@@ -14,6 +14,12 @@ class PremiumBenefit extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    final backgroundColor = isDark ? Colors.black : Colors.white;
+    final textColor = isDark ? Colors.white : Colors.black87;
+
     return FadeTransition(
       opacity: animation,
       child: SlideTransition(
@@ -30,40 +36,27 @@ class PremiumBenefit extends StatelessWidget {
                 scale: animation,
                 child: Container(
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Theme.of(context).colorScheme.primary.withOpacity(0.2),
-                        Theme.of(context).colorScheme.primary.withOpacity(0.4),
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
+                    color: backgroundColor,
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.primary.withOpacity(0.2),
+                        color: theme.colorScheme.primary.withOpacity(0.2),
                         blurRadius: 8,
                         spreadRadius: 2,
                       ),
                     ],
                   ),
                   padding: const EdgeInsets.all(12),
-                  child: Icon(
-                    icon,
-                    color: Theme.of(context).colorScheme.primary,
-                    size: 24,
-                  ),
+                  child: Icon(icon, color: theme.colorScheme.primary, size: 24),
                 ),
               ),
               const SizedBox(width: 16),
               Expanded(
                 child: Text(
                   text,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  style: theme.textTheme.bodyLarge?.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: Theme.of(context).colorScheme.onSurface,
+                    color: textColor,
                   ),
                 ),
               ),

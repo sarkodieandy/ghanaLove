@@ -65,7 +65,7 @@ class _ProfileCreationScreenState extends State<ProfileCreationScreen> {
       if (_currentStep < 2) {
         setState(() => _currentStep++);
       } else {
-        context.go('/profile');
+        context.go('/profile/1');
       }
     }
   }

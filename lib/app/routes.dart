@@ -70,8 +70,6 @@ final GoRouter router = GoRouter(
       name: 'events',
       pageBuilder: (context, state) => _fadePage(state, const EventsScreen()),
     ),
-
-    /// ✅ Dynamic user profile route
     GoRoute(
       path: '/profile/:id',
       name: 'profile',
@@ -80,7 +78,6 @@ final GoRouter router = GoRouter(
         return _fadePage(state, ProfileScreen(userId: userId));
       },
     ),
-
     GoRoute(
       path: '/create-profile',
       name: 'createProfile',
@@ -142,12 +139,12 @@ final GoRouter router = GoRouter(
   ],
 );
 
-/// 🔁 Reusable transition page builders
+/// Reusable page transitions
 CustomTransitionPage _fadePage(GoRouterState state, Widget child) {
   return CustomTransitionPage(
     key: state.pageKey,
     child: child,
-    transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+    transitionsBuilder: (context, animation, _, child) =>
         FadeTransition(opacity: animation, child: child),
   );
 }
@@ -156,14 +153,13 @@ CustomTransitionPage _slidePage(GoRouterState state, Widget child) {
   return CustomTransitionPage(
     key: state.pageKey,
     child: child,
-    transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-        SlideTransition(
-          position: Tween<Offset>(
-            begin: const Offset(1, 0),
-            end: Offset.zero,
-          ).animate(animation),
-          child: child,
-        ),
+    transitionsBuilder: (context, animation, _, child) => SlideTransition(
+      position: Tween<Offset>(
+        begin: const Offset(1, 0),
+        end: Offset.zero,
+      ).animate(animation),
+      child: child,
+    ),
   );
 }
 
@@ -171,13 +167,12 @@ CustomTransitionPage _slideYPage(GoRouterState state, Widget child) {
   return CustomTransitionPage(
     key: state.pageKey,
     child: child,
-    transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-        SlideTransition(
-          position: Tween<Offset>(
-            begin: const Offset(0, 0.1),
-            end: Offset.zero,
-          ).animate(animation),
-          child: child,
-        ),
+    transitionsBuilder: (context, animation, _, child) => SlideTransition(
+      position: Tween<Offset>(
+        begin: const Offset(0, 0.1),
+        end: Offset.zero,
+      ).animate(animation),
+      child: child,
+    ),
   );
 }

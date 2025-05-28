@@ -59,7 +59,7 @@ class _VisibilitySettingsScreenState extends State<VisibilitySettingsScreen> {
                 },
                 activeColor: color.primary,
               );
-            }).toList(),
+            }),
             const Spacer(),
             SizedBox(
               width: double.infinity,
