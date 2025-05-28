@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:ghconnect/core/constants/app_strings.dart';
+import 'package:ghconnect/core/widgets/custom_button.dart';
 
-import '../../../core/constants/app_strings.dart';
-import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/safety_tips.dart';
 
 class SafetyScreen extends StatelessWidget {

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../constants/app_colors.dart';
+import 'package:ghconnect/core/constants/app_colors.dart';
 
 class StatsCard extends StatelessWidget {
   final int views;

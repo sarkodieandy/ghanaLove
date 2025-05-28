@@ -3,10 +3,10 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 
-import '../../../core/constants/app_strings.dart';
-import '../../../core/provider/theme_provider.dart';
-import '../../../core/provider/user_provider.dart';
-import '../../../core/widgets/custom_button.dart';
+import 'package:ghconnect/core/constants/app_strings.dart';
+import 'package:ghconnect/core/widgets/custom_button.dart';
+import 'package:ghconnect/core/provider/theme_provider.dart';
+import 'package:ghconnect/core/provider/user_provider.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
