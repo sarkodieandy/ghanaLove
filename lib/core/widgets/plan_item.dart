@@ -8,13 +8,13 @@ class PlanItem extends StatelessWidget {
   final Animation<double> animation;
 
   const PlanItem({
-    Key? key,
+    super.key,
     required this.duration,
     required this.price,
     required this.perMonth,
     required this.isPopular,
     required this.animation,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

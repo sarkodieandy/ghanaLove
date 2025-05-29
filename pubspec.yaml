@@ -51,6 +51,10 @@ dependencies:
   flutter_icons_fix: ^1.0.3
   flutter_iconpicker: ^3.3.3
   google_maps_flutter: ^2.12.2
+  geolocator: ^14.0.1
+  flutter_map: ^8.1.1
+  latlong2: ^0.9.1
+
  
 
 dev_dependencies:

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../../core/constants/app_strings.dart';
-import '../../../core/widgets/custom_button.dart';
-import '../../../core/constants/app_colors.dart';
+import '../../../core/widgets/chat_app_bar.dart';
+import '../../../core/widgets/chat_input.dart';
+import '../../../core/widgets/chat_message_list.dart';
+import '../../../core/widgets/profile_modal.dart';
+import '../models/chat_message.dart';
 
 class ChatScreen extends StatefulWidget {
   final String chatId;
@@ -13,25 +15,100 @@ class ChatScreen extends StatefulWidget {
   State<ChatScreen> createState() => _ChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   final TextEditingController _messageController = TextEditingController();
-  final List<Map<String, dynamic>> _messages = [
-    {'text': 'Hello! How are you?', 'isMe': false, 'time': '10:30 AM'},
-    {
-      'text': 'I\'m good, thanks for asking. How about you?',
-      'isMe': true,
-      'time': '10:32 AM',
-    },
-    {
-      'text': 'I\'m doing well. Are you free this weekend?',
-      'isMe': false,
-      'time': '10:33 AM',
-    },
-  ];
+  final ScrollController _scrollController = ScrollController();
+
+  late List<ChatMessage> _messages;
+  late AnimationController _sendButtonController;
+  late AnimationController _messageEntryController;
+  late AnimationController _typingIndicatorController;
+
+  bool _isTyping = false;
+  bool _hasText = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeMessages();
+    _initializeAnimations();
+    _simulateTyping();
+
+    _messageController.addListener(_onTextChanged);
+  }
+
+  void _initializeMessages() {
+    _messages = [
+      ChatMessage(
+        id: '1',
+        text: 'Hello! How are you?',
+        isMe: false,
+        timestamp: DateTime.now().subtract(const Duration(minutes: 30)),
+      ),
+      ChatMessage(
+        id: '2',
+        text: 'I\'m good, thanks for asking. How about you?',
+        isMe: true,
+        timestamp: DateTime.now().subtract(const Duration(minutes: 28)),
+      ),
+      ChatMessage(
+        id: '3',
+        text: 'I\'m doing well. Are you free this weekend?',
+        isMe: false,
+        timestamp: DateTime.now().subtract(const Duration(minutes: 27)),
+      ),
+      ChatMessage(
+        id: '4',
+        text: 'Would you like to grab coffee sometime?',
+        isMe: false,
+        timestamp: DateTime.now().subtract(const Duration(minutes: 25)),
+      ),
+    ];
+  }
+
+  void _initializeAnimations() {
+    _sendButtonController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 200),
+    );
+
+    _messageEntryController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+
+    _typingIndicatorController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    )..repeat();
+  }
+
+  void _simulateTyping() {
+    Future.delayed(const Duration(seconds: 2), () {
+      if (mounted) {
+        setState(() => _isTyping = true);
+        Future.delayed(const Duration(seconds: 3), () {
+          if (mounted) setState(() => _isTyping = false);
+        });
+      }
+    });
+  }
+
+  void _onTextChanged() {
+    final hasText = _messageController.text.trim().isNotEmpty;
+    if (hasText != _hasText) {
+      setState(() => _hasText = hasText);
+    }
+  }
 
   @override
   void dispose() {
+    _messageController.removeListener(_onTextChanged);
     _messageController.dispose();
+    _scrollController.dispose();
+    _sendButtonController.dispose();
+    _messageEntryController.dispose();
+    _typingIndicatorController.dispose();
     super.dispose();
   }
 
@@ -39,165 +116,105 @@ class _ChatScreenState extends State<ChatScreen> {
     context.go('/home');
   }
 
+  void _sendMessage() {
+    final text = _messageController.text.trim();
+    if (text.isEmpty) return;
+
+    // Animate send button
+    _sendButtonController.forward().then((_) {
+      _sendButtonController.reverse();
+    });
+
+    // Add message
+    final newMessage = ChatMessage(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      text: text,
+      isMe: true,
+      timestamp: DateTime.now(),
+    );
+
+    setState(() {
+      _messages.insert(0, newMessage);
+    });
+
+    _messageController.clear();
+    _messageEntryController.forward(from: 0);
+
+    // Simulate reply
+    _simulateReply();
+  }
+
+  void _simulateReply() {
+    final randomDelay = 1 + (DateTime.now().millisecond % 3);
+    Future.delayed(Duration(seconds: randomDelay), () {
+      if (mounted) {
+        final reply = ChatMessage(
+          id: DateTime.now().millisecondsSinceEpoch.toString(),
+          text: _generateReply(),
+          isMe: false,
+          timestamp: DateTime.now(),
+        );
+
+        setState(() {
+          _messages.insert(0, reply);
+        });
+        _messageEntryController.forward(from: 0);
+      }
+    });
+  }
+
+  String _generateReply() {
+    final replies = [
+      "That's interesting! Tell me more.",
+      "I'd love to!",
+      "Sounds great!",
+      "What time were you thinking?",
+      "😊",
+      "Let's do it!",
+      "I'm busy this weekend, but maybe next week?",
+    ];
+    return replies[DateTime.now().millisecond % replies.length];
+  }
+
+  void _showProfileModal() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => ProfileModal(chatId: widget.chatId),
+    );
+  }
+
+  void _onQuickReply(String text) {
+    _messageController.text = text;
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: _goBackToHome,
-        ),
-        title: Row(
-          children: [
-            const CircleAvatar(
-              backgroundImage: AssetImage('assets/images/profile.png'),
-            ),
-            const SizedBox(width: 8),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Ama', style: Theme.of(context).textTheme.bodyLarge),
-                Text(
-                  'Online',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodySmall?.copyWith(color: AppColors.onlineGreen),
-                ),
-              ],
-            ),
-          ],
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.videocam),
-            onPressed: () {
-              // Start video call
-            },
-          ),
-          PopupMenuButton(
-            itemBuilder: (context) => const [
-              PopupMenuItem(value: 'report', child: Text('Report')),
-              PopupMenuItem(value: 'block', child: Text('Block')),
-            ],
-          ),
-        ],
+      appBar: ChatAppBar(
+        onBackPressed: _goBackToHome,
+        onProfileTap: _showProfileModal,
+        chatId: widget.chatId,
       ),
       body: Column(
         children: [
           Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.all(16),
-              reverse: true,
-              itemCount: _messages.length,
-              itemBuilder: (context, index) {
-                final message = _messages[index];
-                return Align(
-                  alignment: message['isMe']
-                      ? Alignment.centerRight
-                      : Alignment.centerLeft,
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(vertical: 4),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: message['isMe']
-                          ? AppColors.chatBubbleMe
-                          : Colors.grey[200],
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          message['text'],
-                          style: const TextStyle(color: Colors.black),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          message['time'],
-                          style: TextStyle(
-                            color: Colors.grey[600],
-                            fontSize: 10,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
+            child: ChatMessageList(
+              messages: _messages,
+              isTyping: _isTyping,
+              typingController: _typingIndicatorController,
+              messageController: _messageEntryController,
+              scrollController: _scrollController,
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.emoji_emotions),
-                  onPressed: () {
-                    // Show emoji picker
-                  },
-                ),
-                Expanded(
-                  child: TextField(
-                    controller: _messageController,
-                    decoration: InputDecoration(
-                      hintText: AppStrings.typeMessage,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(24),
-                      ),
-                    ),
-                  ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.attach_file),
-                  onPressed: () {
-                    // Attach file
-                  },
-                ),
-                IconButton(
-                  icon: const Icon(Icons.send),
-                  onPressed: () {
-                    if (_messageController.text.isNotEmpty) {
-                      setState(() {
-                        _messages.insert(0, {
-                          'text': _messageController.text,
-                          'isMe': true,
-                          'time': 'Now',
-                        });
-                        _messageController.clear();
-                      });
-                    }
-                  },
-                ),
-              ],
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            color: Colors.grey[100],
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                CustomButton(
-                  text: AppStrings.virtualGift,
-                  onPressed: () {
-                    // Send virtual gift
-                  },
-                  isPrimary: false,
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                ),
-                CustomButton(
-                  text: AppStrings.videoCall,
-                  onPressed: () {
-                    // Start video call
-                  },
-                  isPrimary: false,
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                ),
-              ],
-            ),
+          ChatInput(
+            controller: _messageController,
+            hasText: _hasText,
+            sendButtonController: _sendButtonController,
+            onSendMessage: _sendMessage,
+            onQuickReply: _onQuickReply,
           ),
         ],
       ),

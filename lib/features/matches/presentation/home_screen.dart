@@ -41,7 +41,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _onTabTapped(int index) {
     setState(() => _currentIndex = index);
-
     switch (index) {
       case 0:
         context.go('/home');
@@ -53,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
         context.go('/chat/1');
         break;
       case 3:
-        context.go('/events');
+        context.go('/nearby'); // 👈 Replaced '/events' with '/nearby'
         break;
       case 4:
         context.go('/profile/1');
@@ -67,18 +66,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+        backgroundColor: theme.appBarTheme.backgroundColor,
         title: Text(
           AppStrings.discover,
           style: theme.textTheme.displaySmall?.copyWith(
-            color: Theme.of(context).colorScheme.onPrimary,
+            color: theme.colorScheme.onPrimary,
           ),
         ),
         actions: [
           IconButton(
             icon: Icon(
               Icons.notifications_active,
-              color: Theme.of(context).colorScheme.onPrimary,
+              color: theme.colorScheme.onPrimary,
             ),
             onPressed: () {
               NotificationService.showSimpleNotification(
@@ -88,12 +87,9 @@ class _HomeScreenState extends State<HomeScreen> {
             },
           ),
           IconButton(
-            icon: Icon(
-              Icons.filter_alt,
-              color: Theme.of(context).colorScheme.onPrimary,
-            ),
+            icon: Icon(Icons.filter_alt, color: theme.colorScheme.onPrimary),
             onPressed: () {
-              // Show filters
+              // TODO: Show filters
             },
           ),
         ],
@@ -161,7 +157,7 @@ class _HomeScreenState extends State<HomeScreen> {
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
         decoration: BoxDecoration(
-          color: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
+          color: theme.bottomNavigationBarTheme.backgroundColor,
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.08),
@@ -175,44 +171,23 @@ class _HomeScreenState extends State<HomeScreen> {
           type: BottomNavigationBarType.fixed,
           backgroundColor: Colors.transparent,
           elevation: 0,
-          selectedItemColor: Theme.of(
-            context,
-          ).bottomNavigationBarTheme.selectedItemColor,
-          unselectedItemColor: Theme.of(
-            context,
-          ).bottomNavigationBarTheme.unselectedItemColor,
-          onTap: (index) {
-            setState(() => _currentIndex = index);
-            _onTabTapped(index);
-          },
-          items: List.generate(5, (index) {
-            const icons = [
-              Icons.home,
-              Icons.favorite,
-              Icons.chat,
-              Icons.event,
-              Icons.person,
-            ];
-            const labels = ['Home', 'Matches', 'Chat', 'Events', 'Profile'];
-
-            return BottomNavigationBarItem(
-              label: labels[index],
-              icon: TweenAnimationBuilder<double>(
-                duration: const Duration(milliseconds: 300),
-                tween: Tween<double>(
-                  begin: 1.0,
-                  end: _currentIndex == index ? 1.2 : 1.0,
-                ),
-                curve: Curves.easeOutBack,
-                builder: (context, scale, child) {
-                  return Transform.scale(
-                    scale: scale,
-                    child: Icon(icons[index]),
-                  );
-                },
-              ),
-            );
-          }),
+          selectedItemColor: theme.bottomNavigationBarTheme.selectedItemColor,
+          unselectedItemColor:
+              theme.bottomNavigationBarTheme.unselectedItemColor,
+          onTap: _onTabTapped,
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.favorite),
+              label: 'Matches',
+            ),
+            // BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chat'),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.location_on),
+              label: 'Nearby',
+            ), // 👈 Changed label
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+          ],
         ),
       ),
     );
