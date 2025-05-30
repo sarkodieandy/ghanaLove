@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ghconnect/core/constants/app_strings.dart';
 import 'package:ghconnect/core/widgets/custom_button.dart';
-
 import '../../../core/widgets/safety_tips.dart';
 
 class SafetyScreen extends StatelessWidget {
@@ -9,11 +8,17 @@ class SafetyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
           'Safety & Verification',
-          style: Theme.of(context).textTheme.displaySmall,
+          style: theme.textTheme.displaySmall,
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context), // standard back
         ),
       ),
       body: SingleChildScrollView(
@@ -23,10 +28,13 @@ class SafetyScreen extends StatelessWidget {
           children: [
             Text(
               AppStrings.verificationOptions,
-              style: Theme.of(context).textTheme.titleLarge,
+              style: theme.textTheme.titleLarge,
             ),
             const SizedBox(height: 8),
             Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
               child: Column(
                 children: [
                   ListTile(
@@ -38,7 +46,7 @@ class SafetyScreen extends StatelessWidget {
                       color: Colors.green,
                     ),
                     onTap: () {
-                      // Phone verification
+                      // Handle phone verification
                     },
                   ),
                   const Divider(height: 1),
@@ -48,7 +56,7 @@ class SafetyScreen extends StatelessWidget {
                     subtitle: const Text('Not verified'),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () {
-                      // Mobile money verification
+                      // Handle MoMo verification
                     },
                   ),
                   const Divider(height: 1),
@@ -58,17 +66,14 @@ class SafetyScreen extends StatelessWidget {
                     subtitle: const Text('Not verified'),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () {
-                      // ID verification
+                      // Handle ID verification
                     },
                   ),
                 ],
               ),
             ),
             const SizedBox(height: 24),
-            Text(
-              AppStrings.safetyTips,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
+            Text(AppStrings.safetyTips, style: theme.textTheme.titleLarge),
             const SizedBox(height: 8),
             const SafetyTip(
               title: 'Meet in Public',
@@ -91,7 +96,7 @@ class SafetyScreen extends StatelessWidget {
             CustomButton(
               text: AppStrings.verifyNow,
               onPressed: () {
-                // Verify now
+                // Navigate to verification screen
               },
             ),
           ],

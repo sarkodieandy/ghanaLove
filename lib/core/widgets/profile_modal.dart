@@ -46,7 +46,6 @@ class ProfileModal extends StatelessWidget {
         ),
         child: Stack(
           children: [
-            // Gradient overlay for better text visibility
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -63,7 +62,6 @@ class ProfileModal extends StatelessWidget {
                 ),
               ),
             ),
-            // Close button
             Positioned(
               top: 16,
               right: 16,
@@ -78,7 +76,6 @@ class ProfileModal extends StatelessWidget {
                 ),
               ),
             ),
-            // Profile info overlay
             Positioned(
               bottom: 16,
               left: 16,
@@ -143,7 +140,6 @@ class ProfileModal extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // About section
           _buildSection(
             title: 'About',
             content: Column(
@@ -160,10 +156,7 @@ class ProfileModal extends StatelessWidget {
               ],
             ),
           ),
-
           const SizedBox(height: 24),
-
-          // Basic info
           _buildSection(
             title: 'Basic Info',
             content: Column(
@@ -175,12 +168,8 @@ class ProfileModal extends StatelessWidget {
               ],
             ),
           ),
-
           const SizedBox(height: 24),
-
-          // Action buttons
           _buildActionButtons(context),
-
           const SizedBox(height: 16),
         ],
       ),
@@ -263,28 +252,19 @@ class ProfileModal extends StatelessWidget {
           icon: Icons.close,
           color: Colors.red,
           label: 'Pass',
-          onTap: () {
-            Navigator.pop(context);
-            // Handle pass action
-          },
+          onTap: () => Navigator.pop(context),
         ),
         _buildProfileActionButton(
           icon: Icons.favorite,
           color: Colors.blue,
           label: 'Like',
-          onTap: () {
-            Navigator.pop(context);
-            // Handle like action
-          },
+          onTap: () => Navigator.pop(context),
         ),
         _buildProfileActionButton(
           icon: Icons.star,
           color: Colors.amber,
           label: 'Super Like',
-          onTap: () {
-            Navigator.pop(context);
-            // Handle super like action
-          },
+          onTap: () => Navigator.pop(context),
         ),
       ],
     );

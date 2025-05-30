@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/widgets/profile_screen_widget.dart';
 import '../../../core/widgets/user_card.dart';
 import '../models/user_model.dart';
+import '../../profile/presentation/profile_screen.dart';
 
 class NearbyScreen extends StatelessWidget {
   NearbyScreen({super.key});
+
   final List<UserModel> mockUsers = [
     UserModel(
       name: "Ama",
@@ -59,7 +61,25 @@ class NearbyScreen extends StatelessWidget {
       longitude: 0.4700,
     ),
   ];
+
   final LatLng currentPosition = LatLng(5.6037, -0.1870); // Accra
+
+  void _navigateToProfile(BuildContext context, UserModel user) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ProfileScreen(
+          name: user.name,
+          age: user.age,
+          location: user.location,
+          bio:
+              'Hi, I\'m ${user.name} from ${user.location}. Looking to connect!',
+          photo: user.imageUrl,
+          userId: '',
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +89,7 @@ class NearbyScreen extends StatelessWidget {
         backgroundColor: AppColors.primaryRed,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.go('/home'),
+          onPressed: () => Navigator.pushReplacementNamed(context, '/home'),
         ),
       ),
       body: Column(
@@ -101,12 +121,7 @@ class NearbyScreen extends StatelessWidget {
                         width: 50,
                         height: 50,
                         child: GestureDetector(
-                          onTap: () {
-                            context.push(
-                              '/profile',
-                              extra: user, // Pass the full user object
-                            );
-                          },
+                          onTap: () => _navigateToProfile(context, user),
                           child: CircleAvatar(
                             backgroundImage: AssetImage(user.imageUrl),
                             radius: 25,
@@ -125,7 +140,13 @@ class NearbyScreen extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               itemCount: mockUsers.length,
               separatorBuilder: (_, __) => const SizedBox(height: 12),
-              itemBuilder: (_, index) => UserCard(user: mockUsers[index]),
+              itemBuilder: (_, index) {
+                final user = mockUsers[index];
+                return UserCard(
+                  user: user,
+                  onTap: () => _navigateToProfile(context, user),
+                );
+              },
             ),
           ),
         ],

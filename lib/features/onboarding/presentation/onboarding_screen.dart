@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../../core/constants/app_strings.dart';
@@ -46,7 +45,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   void _skipOnboarding() {
-    context.go('/register'); // ✅ Updated route
+    Navigator.pushReplacementNamed(context, '/register');
   }
 
   void _nextPage() {

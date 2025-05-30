@@ -1,11 +1,11 @@
-
 import 'package:flutter/material.dart';
 import '../../features/nearby/models/user_model.dart';
 
 class UserCard extends StatelessWidget {
   final UserModel user;
+  final VoidCallback? onTap;
 
-  const UserCard({super.key, required this.user});
+  const UserCard({super.key, required this.user, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -16,6 +16,7 @@ class UserCard extends StatelessWidget {
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: ListTile(
+        onTap: onTap,
         leading: CircleAvatar(
           backgroundImage: AssetImage(user.imageUrl),
           radius: 24,

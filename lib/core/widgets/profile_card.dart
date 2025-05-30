@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ghconnect/core/widgets/profile_screen_widget.dart';
 import '../constants/app_colors.dart';
 
 class ProfileCard extends StatelessWidget {
@@ -26,6 +27,22 @@ class ProfileCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onTap: () {
+        // Navigate to the profile screen and pass user data
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProfileScreen(
+              name: name,
+              age: age,
+              location: location,
+              bio: bio,
+              photo: photo,
+              userId: '',
+            ),
+          ),
+        );
+      },
       onPanEnd: (details) {
         final velocity = details.velocity.pixelsPerSecond;
         if (velocity.dx > 300) {
@@ -41,7 +58,7 @@ class ProfileCard extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(24),
-            color: AppColors.primaryBlack, // ✅ Always black card background
+            color: AppColors.primaryBlack,
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.3),
@@ -84,16 +101,14 @@ class ProfileCard extends StatelessWidget {
                           const Icon(
                             Icons.location_on,
                             size: 16,
-                            color: Colors.white70, // ✅ Light white icon
+                            color: Colors.white70,
                           ),
                           const SizedBox(width: 4),
                           Expanded(
                             child: Text(
                               location,
                               style: Theme.of(context).textTheme.bodyMedium
-                                  ?.copyWith(
-                                    color: Colors.white70, // ✅ Lighter white
-                                  ),
+                                  ?.copyWith(color: Colors.white70),
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
@@ -102,9 +117,9 @@ class ProfileCard extends StatelessWidget {
                       const SizedBox(height: 8),
                       Text(
                         bio,
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: Colors.white, // ✅ White bio
-                        ),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodyLarge?.copyWith(color: Colors.white),
                       ),
                     ],
                   ),

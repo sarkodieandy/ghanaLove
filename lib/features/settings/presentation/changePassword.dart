@@ -27,7 +27,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Password changed successfully!')),
         );
-        Navigator.pop(context);
+        Navigator.pop(context); // Go back to previous screen
       });
     }
   }
@@ -46,7 +46,13 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     final color = theme.colorScheme;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Change Password')),
+      appBar: AppBar(
+        title: const Text('Change Password'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Form(
@@ -91,9 +97,13 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     backgroundColor: color.primary,
                   ),
                   child: _isLoading
-                      ? const CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
+                          ),
                         )
                       : const Text('Update Password'),
                 ),

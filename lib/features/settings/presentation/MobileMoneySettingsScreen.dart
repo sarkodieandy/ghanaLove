@@ -19,7 +19,6 @@ class _MobileMoneySettingsScreenState extends State<MobileMoneySettingsScreen> {
   void _saveSettings() {
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
-
       Future.delayed(const Duration(seconds: 2), () {
         setState(() => _isLoading = false);
         ScaffoldMessenger.of(context).showSnackBar(
@@ -42,14 +41,19 @@ class _MobileMoneySettingsScreenState extends State<MobileMoneySettingsScreen> {
     final color = theme.colorScheme;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Mobile Money Settings')),
+      appBar: AppBar(
+        title: const Text('Mobile Money Settings'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Form(
           key: _formKey,
           child: Column(
             children: [
-              // MoMo Number Input
               TextFormField(
                 controller: _momoNumberController,
                 keyboardType: TextInputType.phone,
@@ -72,8 +76,6 @@ class _MobileMoneySettingsScreenState extends State<MobileMoneySettingsScreen> {
                 },
               ),
               const SizedBox(height: 20),
-
-              // Provider Dropdown
               DropdownButtonFormField<String>(
                 value: _selectedProvider,
                 decoration: InputDecoration(
@@ -84,7 +86,7 @@ class _MobileMoneySettingsScreenState extends State<MobileMoneySettingsScreen> {
                   ),
                 ),
                 items: _providers.map((provider) {
-                  return DropdownMenuItem<String>(
+                  return DropdownMenuItem(
                     value: provider,
                     child: Text(provider),
                   );
@@ -94,8 +96,6 @@ class _MobileMoneySettingsScreenState extends State<MobileMoneySettingsScreen> {
                 },
               ),
               const SizedBox(height: 32),
-
-              // Save Button
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(

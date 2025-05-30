@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -14,7 +13,9 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 3), () {
-      if (mounted) context.go('/onboarding');
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, '/onboarding');
+      }
     });
   }
 

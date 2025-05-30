@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:go_router/go_router.dart';
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({super.key});
@@ -52,13 +51,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     if ((_formKey.currentState?.validate() ?? false) &&
         _interests.length >= 3) {
       _formKey.currentState?.save();
-      // Example usage of _bio: print or send to backend
       debugPrint('Name: $_name');
       debugPrint('Bio: $_bio');
       debugPrint('Age: $_age');
       debugPrint('Gender: $_gender');
       debugPrint('Interests: $_interests');
-      context.go('/login'); // Navigate to login or home
+
+      Navigator.pushReplacementNamed(context, '/login'); // ✅ Navigator used
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(

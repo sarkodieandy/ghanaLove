@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../core/constants/app_strings.dart';
 import '../../../core/widgets/custom_button.dart';
@@ -76,7 +75,7 @@ class _PremiumScreenState extends State<PremiumScreen>
   }
 
   void _goBackToHome(BuildContext context) {
-    context.go('/home');
+    Navigator.pushReplacementNamed(context, '/home');
   }
 
   @override
@@ -109,7 +108,7 @@ class _PremiumScreenState extends State<PremiumScreen>
               scale: _scaleAnimation,
               child: Card(
                 elevation: 4,
-                color: theme.cardColor, // ✅ Dark/light mode
+                color: theme.cardColor,
                 margin: const EdgeInsets.only(bottom: 24),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
@@ -172,7 +171,7 @@ class _PremiumScreenState extends State<PremiumScreen>
                     const SizedBox(height: 12),
                     Card(
                       elevation: 2,
-                      color: theme.cardColor, // ✅ Fix card background
+                      color: theme.cardColor,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
@@ -212,7 +211,7 @@ class _PremiumScreenState extends State<PremiumScreen>
                   child: CustomButton(
                     text: AppStrings.upgradeNow,
                     onPressed: () {
-                      context.push('/transaction');
+                      Navigator.pushNamed(context, '/transaction');
                     },
                   ),
                 ),

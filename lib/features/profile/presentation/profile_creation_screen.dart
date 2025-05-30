@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../core/constants/app_strings.dart';
@@ -65,7 +64,7 @@ class _ProfileCreationScreenState extends State<ProfileCreationScreen> {
       if (_currentStep < 2) {
         setState(() => _currentStep++);
       } else {
-        context.go('/profile/1');
+        Navigator.pushReplacementNamed(context, '/profile/1'); // Complete
       }
     }
   }
@@ -74,7 +73,7 @@ class _ProfileCreationScreenState extends State<ProfileCreationScreen> {
     if (_currentStep > 0) {
       setState(() => _currentStep--);
     } else {
-      context.go('/settings'); // Always go back to settings
+      Navigator.pushReplacementNamed(context, '/settings'); // Back to settings
     }
   }
 
@@ -85,12 +84,12 @@ class _ProfileCreationScreenState extends State<ProfileCreationScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: BackButton(
-          onPressed: () => context.go('/settings'), // Back to settings
+          onPressed: () => Navigator.pushReplacementNamed(context, '/settings'),
         ),
         title: const Text('Create Profile'),
         actions: [
           TextButton(
-            onPressed: () => context.go('/home'),
+            onPressed: () => Navigator.pushReplacementNamed(context, '/home'),
             child: const Text('Skip'),
           ),
         ],

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 class TransactionScreen extends StatefulWidget {
@@ -14,7 +13,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
   final _momoController = TextEditingController();
   final _cardController = TextEditingController();
   bool _showSuccess = false;
-  String _selectedMethod = 'momo'; // 'momo' or 'card'
+  String _selectedMethod = 'momo';
 
   void _submitPayment() {
     if (_formKey.currentState!.validate()) {
@@ -35,7 +34,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => context.pop(),
+          onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           'Complete Payment',
@@ -61,10 +60,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Image.asset(
-              'assets/images/payment_success.png', // Replace with your success image
-              height: 150,
-            )
+        Image.asset('assets/images/payment_success.png', height: 150)
             .animate()
             .scale(
               begin: const Offset(0.5, 0.5),
@@ -74,8 +70,6 @@ class _TransactionScreenState extends State<TransactionScreen> {
             .then(delay: 300.ms)
             .shake(),
         const SizedBox(height: 24),
-
-        const SizedBox(height: 8),
         Text(
           'Your premium subscription is now active',
           style: theme.textTheme.bodyMedium?.copyWith(
@@ -84,11 +78,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
         ),
         const SizedBox(height: 32),
         ElevatedButton.icon(
-          icon: Image.asset(
-            'assets/images/home.png', // Replace with home icon image
-            width: 20,
-            height: 20,
-          ),
+          icon: Image.asset('assets/images/home.png', width: 20, height: 20),
           label: const Text('Back to Home'),
           style: ElevatedButton.styleFrom(
             backgroundColor: theme.colorScheme.primary,
@@ -98,7 +88,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
               borderRadius: BorderRadius.circular(12),
             ),
           ),
-          onPressed: () => context.go('/home'),
+          onPressed: () => Navigator.pushReplacementNamed(context, '/home'),
         ),
       ],
     );
@@ -218,7 +208,6 @@ class _TransactionScreenState extends State<TransactionScreen> {
             ),
           ),
           const SizedBox(height: 16),
-
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

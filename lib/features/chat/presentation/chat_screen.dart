@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+
 import '../../../core/widgets/chat_app_bar.dart';
 import '../../../core/widgets/chat_input.dart';
 import '../../../core/widgets/chat_message_list.dart';
@@ -8,8 +8,9 @@ import '../models/chat_message.dart';
 
 class ChatScreen extends StatefulWidget {
   final String chatId;
+  final String userName;
 
-  const ChatScreen({super.key, required this.chatId});
+  const ChatScreen({super.key, required this.chatId, required this.userName});
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -112,20 +113,19 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     super.dispose();
   }
 
+  // ✅ Using Navigator to go back instead of go_router
   void _goBackToHome() {
-    context.go('/home');
+    Navigator.pop(context);
   }
 
   void _sendMessage() {
     final text = _messageController.text.trim();
     if (text.isEmpty) return;
 
-    // Animate send button
     _sendButtonController.forward().then((_) {
       _sendButtonController.reverse();
     });
 
-    // Add message
     final newMessage = ChatMessage(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       text: text,
@@ -137,14 +137,10 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
       _messages.insert(0, newMessage);
     });
 
-    _messageController.clear();
     _messageEntryController.forward(from: 0);
+    _messageController.clear();
 
     // Simulate reply
-    _simulateReply();
-  }
-
-  void _simulateReply() {
     final randomDelay = 1 + (DateTime.now().millisecond % 3);
     Future.delayed(Duration(seconds: randomDelay), () {
       if (mounted) {
@@ -176,6 +172,11 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     return replies[DateTime.now().millisecond % replies.length];
   }
 
+  void _onQuickReply(String text) {
+    _messageController.text = text;
+    setState(() => _hasText = true);
+  }
+
   void _showProfileModal() {
     showModalBottomSheet(
       context: context,
@@ -185,14 +186,13 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     );
   }
 
-  void _onQuickReply(String text) {
-    _messageController.text = text;
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
+      backgroundColor: isDark ? Colors.grey[900] : Colors.grey[50],
       appBar: ChatAppBar(
         onBackPressed: _goBackToHome,
         onProfileTap: _showProfileModal,

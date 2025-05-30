@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class HelpAndSupportScreen extends StatelessWidget {
   const HelpAndSupportScreen({super.key});
@@ -11,7 +10,10 @@ class HelpAndSupportScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Help & Support', style: theme.textTheme.titleLarge),
-        leading: BackButton(onPressed: () => context.pop()),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),

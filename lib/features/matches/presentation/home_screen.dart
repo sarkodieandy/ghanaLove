@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:ghconnect/core/constants/app_strings.dart';
 import 'package:ghconnect/core/services/notification_service.dart';
 import 'package:ghconnect/core/widgets/profile_card.dart';
@@ -43,19 +42,15 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() => _currentIndex = index);
     switch (index) {
       case 0:
-        context.go('/home');
+        Navigator.pushReplacementNamed(context, '/matches');
         break;
       case 1:
-        context.go('/matches');
+        Navigator.pushReplacementNamed(context, '/nearby');
         break;
       case 2:
-        context.go('/chat/1');
-        break;
-      case 3:
-        context.go('/nearby'); // 👈 Replaced '/events' with '/nearby'
-        break;
-      case 4:
-        context.go('/profile/1');
+        // Replace 'yourUserId' with the actual user ID variable or value
+        const userId = 'yourUserId';
+        Navigator.pushReplacementNamed(context, '/profile/$userId');
         break;
     }
   }
@@ -176,17 +171,18 @@ class _HomeScreenState extends State<HomeScreen> {
               theme.bottomNavigationBarTheme.unselectedItemColor,
           onTap: _onTabTapped,
           items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
             BottomNavigationBarItem(
               icon: Icon(Icons.favorite),
               label: 'Matches',
             ),
-            // BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chat'),
             BottomNavigationBarItem(
               icon: Icon(Icons.location_on),
               label: 'Nearby',
-            ), // 👈 Changed label
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.settings),
+              label: 'Settings',
+            ),
           ],
         ),
       ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/match_card.dart';
@@ -15,7 +14,7 @@ class _MatchesScreenState extends State<MatchesScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
-  final List<Map<String, dynamic>> _likes = []; // empty for now
+  final List<Map<String, dynamic>> _likes = [];
 
   final List<Map<String, dynamic>> _matches = [
     {
@@ -51,7 +50,7 @@ class _MatchesScreenState extends State<MatchesScreen>
   }
 
   void _goBackToHome() {
-    context.go('/home');
+    Navigator.pushReplacementNamed(context, '/home');
   }
 
   @override
@@ -94,7 +93,7 @@ class _MatchesScreenState extends State<MatchesScreen>
             CustomButton(
               text: 'Go Premium',
               onPressed: () {
-                context.go('/premium');
+                Navigator.pushNamed(context, '/premium');
               },
             ),
           ],
@@ -116,9 +115,7 @@ class _MatchesScreenState extends State<MatchesScreen>
           name: _likes[index]['name'],
           age: _likes[index]['age'],
           photo: _likes[index]['photo'],
-          onTap: () {
-            // Handle view profile of likes (future)
-          },
+          onTap: () {},
         );
       },
     );
@@ -130,7 +127,7 @@ class _MatchesScreenState extends State<MatchesScreen>
       itemCount: _matches.length,
       itemBuilder: (context, index) {
         final match = _matches[index];
-        final userId = match['id']; // using this for chat/profile navigation
+        final userId = match['id'];
 
         return MatchCard(
           name: match['name'],
@@ -140,10 +137,10 @@ class _MatchesScreenState extends State<MatchesScreen>
           lastActive: match['lastActive'],
           showActionButtons: true,
           onChatPressed: () {
-            context.go('/chat/$userId');
+            Navigator.pushNamed(context, '/chat/$userId');
           },
           onProfilePressed: () {
-            context.go('/profile/$userId');
+            Navigator.pushNamed(context, '/profile/$userId');
           },
         );
       },

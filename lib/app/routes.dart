@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ghconnect/features/nearby/presentation/nearby_screen.dart';
-import 'package:go_router/go_router.dart';
 
 // Screens
 import '../features/auth/presentation/auth_screen.dart';
@@ -21,158 +19,61 @@ import '../features/settings/presentation/help_and_support_screen.dart';
 import '../features/settings/presentation/settings_screen.dart';
 import '../features/settings/presentation/visibility_settings_screen.dart';
 import '../features/splash/presentation/splash_screen.dart';
+import '../features/nearby/presentation/nearby_screen.dart';
 
-final GoRouter router = GoRouter(
-  initialLocation: '/splash',
-  routes: [
-    GoRoute(
-      path: '/splash',
-      name: 'splash',
-      pageBuilder: (context, state) => _fadePage(state, const SplashScreen()),
-    ),
-    GoRoute(
-      path: '/onboarding',
-      name: 'onboarding',
-      pageBuilder: (context, state) =>
-          _slidePage(state, const OnboardingScreen()),
-    ),
-    GoRoute(
-      path: '/login',
-      name: 'login',
-      pageBuilder: (context, state) => _fadePage(state, const LoginScreen()),
-    ),
-    GoRoute(
-      path: '/register',
-      name: 'register',
-      pageBuilder: (context, state) =>
-          _slideYPage(state, const RegistrationScreen()),
-    ),
-    GoRoute(
-      path: '/home',
-      name: 'home',
-      pageBuilder: (context, state) => _fadePage(state, const HomeScreen()),
-    ),
-    GoRoute(
-      path: '/matches',
-      name: 'matches',
-      pageBuilder: (context, state) => _fadePage(state, const MatchesScreen()),
-    ),
-    GoRoute(
-      path: '/chat/:id',
-      name: 'chat',
-      pageBuilder: (context, state) {
-        final chatId = state.pathParameters['id']!;
-        return _slidePage(state, ChatScreen(chatId: chatId));
-      },
-    ),
-    GoRoute(
-      path: '/nearby',
-      name: 'nearby',
-      pageBuilder: (context, state) => _fadePage(state, NearbyScreen()),
-    ),
-    GoRoute(
-      path: '/profile/:id',
-      name: 'profile',
-      pageBuilder: (context, state) {
-        final userId = state.pathParameters['id']!;
-        return _fadePage(state, ProfileScreen(userId: userId));
-      },
-    ),
-    GoRoute(
-      path: '/create-profile',
-      name: 'createProfile',
-      pageBuilder: (context, state) =>
-          _slidePage(state, const ProfileCreationScreen()),
-    ),
-    GoRoute(
-      path: '/premium',
-      name: 'premium',
-      pageBuilder: (context, state) =>
-          _slideYPage(state, const PremiumScreen()),
-    ),
-    GoRoute(
-      path: '/transaction',
-      name: 'transaction',
-      pageBuilder: (context, state) =>
-          _slidePage(state, const TransactionScreen()),
-    ),
-    GoRoute(
-      path: '/settings',
-      name: 'settings',
-      pageBuilder: (context, state) => _fadePage(state, const SettingsScreen()),
-    ),
-    GoRoute(
-      path: '/settings/password',
-      name: 'changePassword',
-      pageBuilder: (context, state) =>
-          _slidePage(state, const ChangePasswordScreen()),
-    ),
-    GoRoute(
-      path: '/settings/momo',
-      name: 'mobileMoneySettings',
-      pageBuilder: (context, state) =>
-          _slidePage(state, const MobileMoneySettingsScreen()),
-    ),
-    GoRoute(
-      path: '/settings/visibility',
-      name: 'profileVisibility',
-      pageBuilder: (context, state) =>
-          _slidePage(state, const VisibilitySettingsScreen()),
-    ),
-    GoRoute(
-      path: '/settings/blocked',
-      name: 'blockedUsers',
-      pageBuilder: (context, state) =>
-          _fadePage(state, const BlockedUsersScreen()),
-    ),
-    GoRoute(
-      path: '/settings/help',
-      name: 'helpAndSupport',
-      pageBuilder: (context, state) =>
-          _slidePage(state, const HelpAndSupportScreen()),
-    ),
-    GoRoute(
-      path: '/safety',
-      name: 'safety',
-      pageBuilder: (context, state) => _fadePage(state, const SafetyScreen()),
-    ),
-  ],
-);
+/// Static route map
+final Map<String, WidgetBuilder> appRoutes = {
+  '/splash': (context) => const SplashScreen(),
+  '/onboarding': (context) => const OnboardingScreen(),
+  '/login': (context) => const LoginScreen(),
+  '/register': (context) => const RegistrationScreen(),
+  '/home': (context) => const HomeScreen(),
+  '/matches': (context) => const MatchesScreen(),
+  '/nearby': (context) => NearbyScreen(),
+  '/create-profile': (context) => const ProfileCreationScreen(),
+  '/premium': (context) => const PremiumScreen(),
+  '/transaction': (context) => const TransactionScreen(),
+  '/settings': (context) => const SettingsScreen(),
+  '/settings/password': (context) => const ChangePasswordScreen(),
+  '/settings/momo': (context) => const MobileMoneySettingsScreen(),
+  '/settings/visibility': (context) => const VisibilitySettingsScreen(),
+  '/settings/blocked': (context) => const BlockedUsersScreen(),
+  '/settings/help': (context) => const HelpAndSupportScreen(),
+  '/safety': (context) => const SafetyScreen(),
+};
 
-/// Reusable page transitions
-CustomTransitionPage _fadePage(GoRouterState state, Widget child) {
-  return CustomTransitionPage(
-    key: state.pageKey,
-    child: child,
-    transitionsBuilder: (context, animation, _, child) =>
-        FadeTransition(opacity: animation, child: child),
-  );
-}
+/// Handles dynamic routes like `/chat/:id` or `/profile/:id`
+Route<dynamic>? onGenerateRoute(RouteSettings settings) {
+  final uri = Uri.parse(settings.name ?? '');
 
-CustomTransitionPage _slidePage(GoRouterState state, Widget child) {
-  return CustomTransitionPage(
-    key: state.pageKey,
-    child: child,
-    transitionsBuilder: (context, animation, _, child) => SlideTransition(
-      position: Tween<Offset>(
-        begin: const Offset(1, 0),
-        end: Offset.zero,
-      ).animate(animation),
-      child: child,
-    ),
-  );
-}
+  if (uri.pathSegments.length == 2) {
+    final id = uri.pathSegments[1];
 
-CustomTransitionPage _slideYPage(GoRouterState state, Widget child) {
-  return CustomTransitionPage(
-    key: state.pageKey,
-    child: child,
-    transitionsBuilder: (context, animation, _, child) => SlideTransition(
-      position: Tween<Offset>(
-        begin: const Offset(0, 0.1),
-        end: Offset.zero,
-      ).animate(animation),
-      child: child,
-    ),
+    if (uri.pathSegments[0] == 'chat') {
+      return MaterialPageRoute(
+        builder: (context) => ChatScreen(chatId: id, userName: ''),
+        settings: settings,
+      );
+    }
+
+    if (uri.pathSegments[0] == 'profile') {
+      return MaterialPageRoute(
+        builder: (context) => User_settings_Screen(
+          userId: id,
+          location: '',
+          age: 0,
+          name: '',
+          bio: '',
+          photo: '',
+        ),
+        settings: settings,
+      );
+    }
+  }
+
+  // Unknown route fallback
+  return MaterialPageRoute(
+    builder: (context) =>
+        const Scaffold(body: Center(child: Text('404 - Page Not Found'))),
   );
 }

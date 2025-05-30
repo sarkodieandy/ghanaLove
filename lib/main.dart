@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
-
-import 'package:ghconnect/app/routes.dart';
 import 'package:ghconnect/core/theme/app_theme.dart';
 import 'package:ghconnect/core/provider/theme_provider.dart';
 import 'package:ghconnect/core/provider/user_provider.dart';
 
+import 'app/routes.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // ✅ Initialize Awesome Notifications
+  // Initialize Awesome Notifications
   AwesomeNotifications().initialize(null, [
     NotificationChannel(
       channelKey: 'basic_channel',
@@ -24,7 +24,7 @@ void main() async {
     ),
   ], debug: true);
 
-  // ✅ Ask notification permission on Android 13+
+  // Ask notification permission on Android 13+
   await AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
     if (!isAllowed) {
       AwesomeNotifications().requestPermissionToSendNotifications();
@@ -42,17 +42,19 @@ class GhanaLoveApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
-        ChangeNotifierProvider(create: (_) => UserProvider()), // ✅ User state
+        ChangeNotifierProvider(create: (_) => UserProvider()),
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, _) {
-          return MaterialApp.router(
+          return MaterialApp(
             title: 'GhanaLove',
             debugShowCheckedModeBanner: false,
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
             themeMode: themeProvider.themeMode,
-            routerConfig: router,
+            initialRoute: '/splash',
+            routes: appRoutes, // Use the routes map from app_routes.dart
+            onGenerateRoute: onGenerateRoute, // For dynamic routes
             builder: (context, child) {
               final data = MediaQuery.of(context);
               return MediaQuery(

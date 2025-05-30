@@ -29,7 +29,13 @@ class _BlockedUsersScreenState extends State<BlockedUsersScreen> {
     final color = theme.colorScheme;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Blocked Users')),
+      appBar: AppBar(
+        title: const Text('Blocked Users'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context), // Go back normally
+        ),
+      ),
       body: _blockedUsers.isEmpty
           ? Center(
               child: Text(

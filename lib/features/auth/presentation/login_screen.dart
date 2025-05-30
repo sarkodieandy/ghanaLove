@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -22,7 +21,7 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() => _isLoading = true);
       Future.delayed(const Duration(seconds: 2), () {
         setState(() => _isLoading = false);
-        context.go('/home');
+        Navigator.pushReplacementNamed(context, '/home'); // ✅ Navigator used
       });
     }
   }
@@ -119,7 +118,7 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 16),
               TextButton(
                 onPressed: () {
-                  context.go('/register');
+                  Navigator.pushNamed(context, '/register'); // ✅ Navigator used
                 },
                 child: const Text("Don't have an account? Register"),
               ).animate().fadeIn(delay: 700.ms),

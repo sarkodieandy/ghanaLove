@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 
@@ -53,7 +52,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Sections
             _buildSectionHeader(
               context,
               AppStrings.account,
@@ -64,14 +62,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 icon: Icons.lock_rounded,
                 iconColor: colorScheme.primary,
                 title: 'Change Password',
-                onTap: () => context.push('/settings/password'),
+                onTap: () => Navigator.pushNamed(context, '/settings/password'),
               ),
               _divider(),
               _SettingsTile(
                 icon: Icons.money_rounded,
                 iconColor: Colors.green,
                 title: 'Mobile Money Settings',
-                onTap: () => context.push('/settings/momo'),
+                onTap: () => Navigator.pushNamed(context, '/settings/momo'),
               ),
             ], isDark),
 
@@ -87,14 +85,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 iconColor: Colors.blue,
                 title: 'Profile Visibility',
                 subtitle: 'Public',
-                onTap: () => context.push('/settings/visibility'),
+                onTap: () =>
+                    Navigator.pushNamed(context, '/settings/visibility'),
               ),
               _divider(),
               _SettingsTile(
                 icon: Icons.block_rounded,
                 iconColor: Colors.red,
                 title: 'Blocked Users',
-                onTap: () => context.push('/settings/blocked'),
+                onTap: () => Navigator.pushNamed(context, '/settings/blocked'),
               ),
             ], isDark),
 
@@ -183,7 +182,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               icon: Icons.help_center_rounded,
               iconColor: Colors.blueAccent,
               title: AppStrings.helpSupport,
-              onTap: () => context.push('/settings/help'),
+              onTap: () => Navigator.pushNamed(context, '/settings/help'),
             ),
 
             const SizedBox(height: 32),
@@ -201,9 +200,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 );
 
-                // 🔁 Navigate to dynamic profile screen
                 final userId = userProvider.userId;
-                context.go('/profile/$userId');
+                Navigator.pushReplacementNamed(context, '/profile/$userId');
               },
             ),
           ],

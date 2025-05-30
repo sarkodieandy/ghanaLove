@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/stats_card.dart';
 
-class ProfileScreen extends StatelessWidget {
+class User_settings_Screen extends StatelessWidget {
   final String userId;
 
-  const ProfileScreen({super.key, required this.userId});
+  const User_settings_Screen({
+    super.key,
+    required this.userId,
+    required String location,
+    required int age,
+    required String name,
+    required String bio,
+    required String photo,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -26,12 +33,13 @@ class ProfileScreen extends StatelessWidget {
             pinned: true,
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
-              onPressed: () => context.go('/home'),
+              onPressed: () => Navigator.pushReplacementNamed(context, '/home'),
             ),
             actions: [
               IconButton(
                 icon: const Icon(Icons.edit),
-                onPressed: () => context.go('/create-profile'),
+                onPressed: () =>
+                    Navigator.pushNamed(context, '/profile/create'),
               ),
             ],
             flexibleSpace: FlexibleSpaceBar(
@@ -117,20 +125,21 @@ class ProfileScreen extends StatelessWidget {
                   const SizedBox(height: 16),
                   CustomButton(
                     text: 'Edit Profile',
-                    onPressed: () => context.go('/create-profile'),
+                    onPressed: () =>
+                        Navigator.pushNamed(context, '/profile/create'),
                   ),
                   const SizedBox(height: 16),
                   ListTile(
                     leading: const Icon(Icons.settings),
                     title: const Text('Settings'),
                     trailing: const Icon(Icons.chevron_right),
-                    onTap: () => context.go('/settings'),
+                    onTap: () => Navigator.pushNamed(context, '/settings'),
                   ),
                   ListTile(
                     leading: const Icon(Icons.workspace_premium),
                     title: const Text('Go Premium'),
                     trailing: const Icon(Icons.chevron_right),
-                    onTap: () => context.go('/premium'),
+                    onTap: () => Navigator.pushNamed(context, '/premium'),
                   ),
                   const SizedBox(height: 16),
                   CustomButton(
@@ -138,7 +147,7 @@ class ProfileScreen extends StatelessWidget {
                     isPrimary: false,
                     onPressed: () {
                       // TODO: Add logout logic
-                      context.go('/login');
+                      Navigator.pushReplacementNamed(context, '/login');
                     },
                   ),
                 ],

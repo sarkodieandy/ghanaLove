@@ -66,7 +66,7 @@ class MatchCard extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  if (bio != null) ...[
+                  if (bio != null && bio!.isNotEmpty) ...[
                     const SizedBox(height: 4),
                     Text(
                       bio!,
@@ -75,7 +75,7 @@ class MatchCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ],
-                  if (lastActive != null) ...[
+                  if (lastActive != null && lastActive!.isNotEmpty) ...[
                     const SizedBox(height: 4),
                     Text(
                       'Last active: $lastActive',

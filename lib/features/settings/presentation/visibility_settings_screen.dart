@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class VisibilitySettingsScreen extends StatefulWidget {
   const VisibilitySettingsScreen({super.key});
@@ -21,7 +20,7 @@ class _VisibilitySettingsScreenState extends State<VisibilitySettingsScreen> {
         behavior: SnackBarBehavior.floating,
       ),
     );
-    context.pop(); // Navigate back to settings
+    Navigator.pop(context); // Replaced context.pop()
   }
 
   @override
@@ -34,7 +33,7 @@ class _VisibilitySettingsScreenState extends State<VisibilitySettingsScreen> {
         title: const Text('Profile Visibility'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.pop(),
+          onPressed: () => Navigator.pop(context),
         ),
       ),
       body: Padding(
