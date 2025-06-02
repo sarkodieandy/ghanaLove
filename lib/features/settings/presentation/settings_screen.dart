@@ -5,7 +5,6 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:ghconnect/core/constants/app_strings.dart';
 import 'package:ghconnect/core/widgets/custom_button.dart';
 import 'package:ghconnect/core/provider/theme_provider.dart';
-import 'package:ghconnect/core/provider/user_provider.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -33,178 +32,189 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
-    final userProvider = Provider.of<UserProvider>(context);
     final colorScheme = Theme.of(context).colorScheme;
     final isDark = themeProvider.isDarkMode;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Settings',
-          style: Theme.of(
-            context,
-          ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            'Settings',
+            style: Theme.of(
+              context,
+            ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+          ),
+          centerTitle: true,
         ),
-        centerTitle: true,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildSectionHeader(
-              context,
-              AppStrings.account,
-              Icons.account_circle_rounded,
-            ),
-            _buildSettingsCard([
-              _SettingsTile(
-                icon: Icons.lock_rounded,
-                iconColor: colorScheme.primary,
-                title: 'Change Password',
-                onTap: () => Navigator.pushNamed(context, '/settings/password'),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildSectionHeader(
+                context,
+                AppStrings.account,
+                Icons.account_circle_rounded,
               ),
-              _divider(),
-              _SettingsTile(
-                icon: Icons.money_rounded,
-                iconColor: Colors.green,
-                title: 'Mobile Money Settings',
-                onTap: () => Navigator.pushNamed(context, '/settings/momo'),
-              ),
-            ], isDark),
-
-            const SizedBox(height: 24),
-            _buildSectionHeader(
-              context,
-              AppStrings.privacy,
-              Icons.privacy_tip_rounded,
-            ),
-            _buildSettingsCard([
-              _SettingsTile(
-                icon: Icons.visibility_rounded,
-                iconColor: Colors.blue,
-                title: 'Profile Visibility',
-                subtitle: 'Public',
-                onTap: () =>
-                    Navigator.pushNamed(context, '/settings/visibility'),
-              ),
-              _divider(),
-              _SettingsTile(
-                icon: Icons.block_rounded,
-                iconColor: Colors.red,
-                title: 'Blocked Users',
-                onTap: () => Navigator.pushNamed(context, '/settings/blocked'),
-              ),
-            ], isDark),
-
-            const SizedBox(height: 24),
-            _buildSectionHeader(
-              context,
-              AppStrings.notifications,
-              Icons.notifications_rounded,
-            ),
-            _buildSettingsCard([
-              _SettingsTile(
-                icon: Icons.notifications_active_rounded,
-                iconColor: Colors.deepOrange,
-                title: 'Enable Notifications',
-                trailing: Switch(
-                  value: _notificationsEnabled,
-                  onChanged: (value) {
-                    setState(() => _notificationsEnabled = value);
-                    if (value) _triggerLocalNotification();
-                  },
-                  activeColor: colorScheme.primary,
+              _buildSettingsCard([
+                _SettingsTile(
+                  icon: Icons.lock_rounded,
+                  iconColor: colorScheme.primary,
+                  title: 'Change Password',
+                  onTap: () =>
+                      Navigator.pushNamed(context, '/settings/password'),
                 ),
-              ),
-            ], isDark),
+                _divider(),
+                _SettingsTile(
+                  icon: Icons.money_rounded,
+                  iconColor: Colors.green,
+                  title: 'Mobile Money Settings',
+                  onTap: () => Navigator.pushNamed(context, '/settings/momo'),
+                ),
+              ], isDark),
 
-            const SizedBox(height: 24),
-            _buildSectionHeader(
-              context,
-              AppStrings.language,
-              Icons.language_rounded,
-            ),
-            Card(
-              elevation: 0,
-              color: isDark ? Colors.grey[900] : null,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-                side: BorderSide(color: colorScheme.outline.withOpacity(0.2)),
+              const SizedBox(height: 24),
+              _buildSectionHeader(
+                context,
+                AppStrings.privacy,
+                Icons.privacy_tip_rounded,
               ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: DropdownButtonFormField<String>(
-                  value: _selectedLanguage,
-                  icon: const Icon(Icons.keyboard_arrow_down_rounded),
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    prefixIcon: Icon(Icons.translate_rounded, size: 24),
+              _buildSettingsCard([
+                _SettingsTile(
+                  icon: Icons.visibility_rounded,
+                  iconColor: Colors.blue,
+                  title: 'Profile Visibility',
+                  subtitle: 'Public',
+                  onTap: () =>
+                      Navigator.pushNamed(context, '/settings/visibility'),
+                ),
+                _divider(),
+                _SettingsTile(
+                  icon: Icons.block_rounded,
+                  iconColor: Colors.red,
+                  title: 'Blocked Users',
+                  onTap: () =>
+                      Navigator.pushNamed(context, '/settings/blocked'),
+                ),
+              ], isDark),
+
+              const SizedBox(height: 24),
+              _buildSectionHeader(
+                context,
+                AppStrings.notifications,
+                Icons.notifications_rounded,
+              ),
+              _buildSettingsCard([
+                _SettingsTile(
+                  icon: Icons.notifications_active_rounded,
+                  iconColor: Colors.deepOrange,
+                  title: 'Enable Notifications',
+                  trailing: Switch(
+                    value: _notificationsEnabled,
+                    onChanged: (value) {
+                      setState(() => _notificationsEnabled = value);
+                      if (value) _triggerLocalNotification();
+                    },
+                    activeColor: colorScheme.primary,
                   ),
-                  items: ['English', 'Twi', 'Ga'].map((language) {
-                    return DropdownMenuItem(
-                      value: language,
-                      child: Text(
-                        language,
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      ),
-                    );
-                  }).toList(),
-                  onChanged: (value) =>
-                      setState(() => _selectedLanguage = value!),
                 ),
-              ),
-            ),
+              ], isDark),
 
-            const SizedBox(height: 24),
-            _buildSectionHeader(
-              context,
-              AppStrings.theme,
-              Icons.brightness_6_rounded,
-            ),
-            _buildSettingsCard([
-              _SettingsTile(
-                icon: isDark
-                    ? Icons.dark_mode_rounded
-                    : Icons.light_mode_rounded,
-                iconColor: isDark ? Colors.indigo : Colors.amber,
-                title: 'Dark Mode',
-                trailing: Switch(
-                  value: isDark,
-                  onChanged: (value) => themeProvider.toggleTheme(value),
-                  activeColor: colorScheme.primary,
+              const SizedBox(height: 24),
+              _buildSectionHeader(
+                context,
+                AppStrings.language,
+                Icons.language_rounded,
+              ),
+              Card(
+                elevation: 0,
+                color: isDark ? Colors.grey[900] : null,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  side: BorderSide(color: colorScheme.outline.withOpacity(0.2)),
                 ),
-              ),
-            ], isDark),
-
-            const SizedBox(height: 24),
-            _SettingsTile(
-              icon: Icons.help_center_rounded,
-              iconColor: Colors.blueAccent,
-              title: AppStrings.helpSupport,
-              onTap: () => Navigator.pushNamed(context, '/settings/help'),
-            ),
-
-            const SizedBox(height: 32),
-            CustomButton(
-              text: AppStrings.saveChanges,
-              icon: Icons.save_rounded,
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: const Text('Settings saved'),
-                    behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: DropdownButtonFormField<String>(
+                    value: _selectedLanguage,
+                    icon: const Icon(Icons.keyboard_arrow_down_rounded),
+                    decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      prefixIcon: Icon(Icons.translate_rounded, size: 24),
                     ),
+                    items: ['English', 'Twi', 'Ga'].map((language) {
+                      return DropdownMenuItem(
+                        value: language,
+                        child: Text(
+                          language,
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (value) =>
+                        setState(() => _selectedLanguage = value!),
                   ),
-                );
+                ),
+              ),
 
-                final userId = userProvider.userId;
-                Navigator.pushReplacementNamed(context, '/profile/$userId');
-              },
-            ),
-          ],
+              const SizedBox(height: 24),
+              _buildSectionHeader(
+                context,
+                AppStrings.theme,
+                Icons.brightness_6_rounded,
+              ),
+              _buildSettingsCard([
+                _SettingsTile(
+                  icon: isDark
+                      ? Icons.dark_mode_rounded
+                      : Icons.light_mode_rounded,
+                  iconColor: isDark ? Colors.indigo : Colors.amber,
+                  title: 'Dark Mode',
+                  trailing: Switch(
+                    value: isDark,
+                    onChanged: (value) => themeProvider.toggleTheme(value),
+                    activeColor: colorScheme.primary,
+                  ),
+                ),
+              ], isDark),
+
+              const SizedBox(height: 24),
+              _SettingsTile(
+                icon: Icons.help_center_rounded,
+                iconColor: Colors.blueAccent,
+                title: AppStrings.helpSupport,
+                onTap: () => Navigator.pushNamed(context, '/settings/help'),
+              ),
+
+              const SizedBox(height: 32),
+              CustomButton(
+                text: AppStrings.saveChanges,
+                icon: Icons.save_rounded,
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: const Text('Settings saved'),
+                      behavior: SnackBarBehavior.floating,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  );
+
+                  // ✅ Navigate to homepage after saving settings
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    '/home',
+                    (route) => false,
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

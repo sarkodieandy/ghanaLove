@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:ghconnect/features/chat/presentation/calls/video_call_screen.dart';
+import 'package:ghconnect/features/chat/presentation/calls/voice_call_screen.dart';
 
 import '../../../core/widgets/chat_app_bar.dart';
 import '../../../core/widgets/chat_input.dart';
@@ -34,7 +36,6 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     _initializeMessages();
     _initializeAnimations();
     _simulateTyping();
-
     _messageController.addListener(_onTextChanged);
   }
 
@@ -72,12 +73,10 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
       vsync: this,
       duration: const Duration(milliseconds: 200),
     );
-
     _messageEntryController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 300),
     );
-
     _typingIndicatorController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1500),
@@ -102,22 +101,6 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     }
   }
 
-  @override
-  void dispose() {
-    _messageController.removeListener(_onTextChanged);
-    _messageController.dispose();
-    _scrollController.dispose();
-    _sendButtonController.dispose();
-    _messageEntryController.dispose();
-    _typingIndicatorController.dispose();
-    super.dispose();
-  }
-
-  // ✅ Using Navigator to go back instead of go_router
-  void _goBackToHome() {
-    Navigator.pop(context);
-  }
-
   void _sendMessage() {
     final text = _messageController.text.trim();
     if (text.isEmpty) return;
@@ -140,9 +123,9 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     _messageEntryController.forward(from: 0);
     _messageController.clear();
 
-    // Simulate reply
-    final randomDelay = 1 + (DateTime.now().millisecond % 3);
-    Future.delayed(Duration(seconds: randomDelay), () {
+    // Simulate response
+    final delay = 1 + (DateTime.now().millisecond % 3);
+    Future.delayed(Duration(seconds: delay), () {
       if (mounted) {
         final reply = ChatMessage(
           id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -150,7 +133,6 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
           isMe: false,
           timestamp: DateTime.now(),
         );
-
         setState(() {
           _messages.insert(0, reply);
         });
@@ -167,7 +149,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
       "What time were you thinking?",
       "😊",
       "Let's do it!",
-      "I'm busy this weekend, but maybe next week?",
+      "I'm busy this weekend, maybe next week?",
     ];
     return replies[DateTime.now().millisecond % replies.length];
   }
@@ -186,6 +168,39 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     );
   }
 
+  void _startVoiceCall() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => VoiceCallScreen(userName: widget.userName),
+      ),
+    );
+  }
+
+  void _startVideoCall() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => VideoCallScreen(userName: widget.userName),
+      ),
+    );
+  }
+
+  void _goBackToHome() {
+    Navigator.pop(context);
+  }
+
+  @override
+  void dispose() {
+    _messageController.removeListener(_onTextChanged);
+    _messageController.dispose();
+    _scrollController.dispose();
+    _sendButtonController.dispose();
+    _messageEntryController.dispose();
+    _typingIndicatorController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -196,6 +211,8 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
       appBar: ChatAppBar(
         onBackPressed: _goBackToHome,
         onProfileTap: _showProfileModal,
+        onVoiceCall: _startVoiceCall,
+        onVideoCall: _startVideoCall,
         chatId: widget.chatId,
       ),
       body: Column(

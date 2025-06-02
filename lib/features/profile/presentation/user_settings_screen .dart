@@ -2,29 +2,26 @@ import 'package:flutter/material.dart';
 import '../../../core/widgets/custom_button.dart';
 import '../../../core/widgets/stats_card.dart';
 
-class User_settings_Screen extends StatelessWidget {
+class UserSettingsScreen extends StatelessWidget {
   final String userId;
+  final String location;
+  final int age;
+  final String name;
+  final String bio;
+  final String photo;
 
-  const User_settings_Screen({
+  const UserSettingsScreen({
     super.key,
     required this.userId,
-    required String location,
-    required int age,
-    required String name,
-    required String bio,
-    required String photo,
+    required this.location,
+    required this.age,
+    required this.name,
+    required this.bio,
+    required this.photo,
   });
 
   @override
   Widget build(BuildContext context) {
-    // Simulate fetching user details by ID
-    final userName = userId == '1' ? 'Kwame' : 'Ama';
-    final userAge = userId == '1' ? 28 : 25;
-    final userLocation = userId == '1' ? 'Accra' : 'Kumasi';
-    final userBio = userId == '1'
-        ? 'Software developer who enjoys hiking and trying new foods.'
-        : 'Fashion designer who loves music and traveling.';
-
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -39,7 +36,7 @@ class User_settings_Screen extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.edit),
                 onPressed: () =>
-                    Navigator.pushNamed(context, '/profile/create'),
+                    Navigator.pushNamed(context, '/create-profile'),
               ),
             ],
             flexibleSpace: FlexibleSpaceBar(
@@ -69,20 +66,18 @@ class User_settings_Screen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const CircleAvatar(
+                        CircleAvatar(
                           radius: 40,
-                          backgroundImage: AssetImage(
-                            'assets/images/profile.png',
-                          ),
+                          backgroundImage: AssetImage(photo),
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          '$userName, $userAge',
+                          '$name, $age',
                           style: Theme.of(context).textTheme.displaySmall
                               ?.copyWith(color: Colors.white),
                         ),
                         Text(
-                          userLocation,
+                          location,
                           style: Theme.of(
                             context,
                           ).textTheme.bodyLarge?.copyWith(color: Colors.white),
@@ -105,7 +100,7 @@ class User_settings_Screen extends StatelessWidget {
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   const SizedBox(height: 8),
-                  Text(userBio),
+                  Text(bio),
                   const SizedBox(height: 16),
                   Text(
                     'Cultural Info',
@@ -126,7 +121,7 @@ class User_settings_Screen extends StatelessWidget {
                   CustomButton(
                     text: 'Edit Profile',
                     onPressed: () =>
-                        Navigator.pushNamed(context, '/profile/create'),
+                        Navigator.pushNamed(context, '/create-profile'),
                   ),
                   const SizedBox(height: 16),
                   ListTile(
@@ -145,10 +140,8 @@ class User_settings_Screen extends StatelessWidget {
                   CustomButton(
                     text: 'Logout',
                     isPrimary: false,
-                    onPressed: () {
-                      // TODO: Add logout logic
-                      Navigator.pushReplacementNamed(context, '/login');
-                    },
+                    onPressed: () =>
+                        Navigator.pushReplacementNamed(context, '/login'),
                   ),
                 ],
               ),

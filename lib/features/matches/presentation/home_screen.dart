@@ -48,9 +48,10 @@ class _HomeScreenState extends State<HomeScreen> {
         Navigator.pushReplacementNamed(context, '/nearby');
         break;
       case 2:
-        // Replace 'yourUserId' with the actual user ID variable or value
-        const userId = 'yourUserId';
-        Navigator.pushReplacementNamed(context, '/profile/$userId');
+        Navigator.pushReplacementNamed(context, '/messages'); // ✅ Messages tab
+        break;
+      case 3:
+        Navigator.pushReplacementNamed(context, '/settings');
         break;
     }
   }
@@ -61,6 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false, // 🚫 Removes back button
         backgroundColor: theme.appBarTheme.backgroundColor,
         title: Text(
           AppStrings.discover,
@@ -178,6 +180,10 @@ class _HomeScreenState extends State<HomeScreen> {
             BottomNavigationBarItem(
               icon: Icon(Icons.location_on),
               label: 'Nearby',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.message),
+              label: 'Messages',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.settings),

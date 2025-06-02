@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
-// Ensure GoRouter is imported for navigation
 
 class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final VoidCallback onBackPressed; // The back navigation callback
+  final VoidCallback onBackPressed;
   final VoidCallback onProfileTap;
+  final VoidCallback onVoiceCall;
+  final VoidCallback onVideoCall;
   final String chatId;
 
   const ChatAppBar({
     super.key,
     required this.onBackPressed,
     required this.onProfileTap,
+    required this.onVoiceCall,
+    required this.onVideoCall,
     required this.chatId,
   });
 
@@ -21,8 +24,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: Colors.white,
       leading: IconButton(
         icon: const Icon(Icons.arrow_back_ios, size: 20, color: Colors.black),
-        onPressed:
-            onBackPressed, // Ensure this calls the correct back navigation
+        onPressed: onBackPressed,
       ),
       title: InkWell(
         onTap: onProfileTap,
@@ -33,17 +35,9 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
             children: [
               Hero(
                 tag: 'profile-$chatId',
-                child: CircleAvatar(
+                child: const CircleAvatar(
                   radius: 20,
-                  backgroundImage: const AssetImage(
-                    'assets/images/profile.png',
-                  ),
-                  onBackgroundImageError: (exception, stackTrace) {
-                    // Handle image loading error
-                  },
-                  child: const AssetImage('assets/images/profile.png') == null
-                      ? const Icon(Icons.person, color: Colors.white)
-                      : null,
+                  backgroundImage: AssetImage('assets/images/profile.png'),
                 ),
               ),
               const SizedBox(width: 12),
@@ -94,26 +88,17 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
         IconButton(
           icon: const Icon(Icons.phone, color: Colors.black),
           tooltip: 'Voice Call',
-          onPressed: () {
-            // Voice Call functionality (you can implement this)
-            _showFeatureNotImplemented(context, 'Voice Call');
-          },
+          onPressed: onVoiceCall,
         ),
         IconButton(
           icon: const Icon(Icons.videocam, color: Colors.black),
           tooltip: 'Video Call',
-          onPressed: () {
-            // Video Call functionality (you can implement this)
-            _showFeatureNotImplemented(context, 'Video Call');
-          },
+          onPressed: onVideoCall,
         ),
         PopupMenuButton<String>(
           icon: const Icon(Icons.more_vert, color: Colors.black),
           onSelected: (value) {
-            // Implement the actions for menu items (e.g., View Profile)
-            if (value == 'profile') {
-              onProfileTap();
-            }
+            if (value == 'profile') onProfileTap();
           },
           itemBuilder: (context) => [
             const PopupMenuItem(
@@ -126,21 +111,9 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
                 ],
               ),
             ),
-            // Add more menu items as needed
           ],
         ),
       ],
-    );
-  }
-
-  // This method is used to show a message for unimplemented features
-  void _showFeatureNotImplemented(BuildContext context, String feature) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('$feature feature will be implemented soon!'),
-        backgroundColor: Colors.blue,
-        behavior: SnackBarBehavior.floating,
-      ),
     );
   }
 

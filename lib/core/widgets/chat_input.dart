@@ -21,13 +21,8 @@ class ChatInput extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Column(
-        children: [
-          // Quick reply options
-          _buildQuickReplies(),
-
-          // Input field
-          _buildInputField(context),
-        ],
+        mainAxisSize: MainAxisSize.min,
+        children: [_buildQuickReplies(), _buildInputField(context)],
       ),
     );
   }
@@ -36,47 +31,49 @@ class ChatInput extends StatelessWidget {
     final quickReplies = ["Hi there!", "What's up?", "Let's meet!", "😊", "👍"];
 
     return Container(
-      height: 50,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      height: 48,
+      padding: const EdgeInsets.symmetric(horizontal: 12),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: quickReplies.length,
         itemBuilder: (context, index) {
-          return _buildQuickReply(quickReplies[index]);
+          return Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: InkWell(
+              onTap: () => onQuickReply(quickReplies[index]),
+              borderRadius: BorderRadius.circular(16),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 8,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: Colors.grey[300]!),
+                ),
+                child: Text(
+                  quickReplies[index],
+                  style: const TextStyle(fontSize: 14),
+                ),
+              ),
+            ),
+          );
         },
-      ),
-    );
-  }
-
-  Widget _buildQuickReply(String text) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 8),
-      child: InkWell(
-        onTap: () => onQuickReply(text),
-        borderRadius: BorderRadius.circular(16),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: BoxDecoration(
-            color: Colors.grey[100],
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.grey[300]!),
-          ),
-          child: Text(text, style: const TextStyle(color: Colors.black)),
-        ),
       ),
     );
   }
 
   Widget _buildInputField(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
       color: Colors.white,
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
       child: Row(
         children: [
           IconButton(
             icon: const Icon(Icons.add_circle_outline),
             color: Colors.blue,
-            onPressed: _showAttachmentOptions,
+            onPressed: () => _showAttachmentOptions(context),
           ),
           Expanded(
             child: Container(
@@ -90,48 +87,42 @@ class ChatInput extends StatelessWidget {
                   Expanded(
                     child: TextField(
                       controller: controller,
+                      maxLines: null,
+                      textCapitalization: TextCapitalization.sentences,
                       decoration: InputDecoration(
                         hintText: AppStrings.typeMessage,
                         border: InputBorder.none,
                         hintStyle: TextStyle(color: Colors.grey[600]),
                       ),
-                      maxLines: null,
-                      textCapitalization: TextCapitalization.sentences,
                     ),
                   ),
                   if (!hasText)
                     IconButton(
                       icon: const Icon(Icons.emoji_emotions),
                       color: Colors.blue,
-                      onPressed: _showEmojiPicker,
+                      onPressed: () => _showEmojiPicker(context),
                     ),
                 ],
               ),
             ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 6),
           AnimatedSwitcher(
-            duration: const Duration(milliseconds: 200),
+            duration: const Duration(milliseconds: 250),
+            transitionBuilder: (child, animation) =>
+                ScaleTransition(scale: animation, child: child),
             child: hasText
-                ? ScaleTransition(
-                    scale: Tween(begin: 0.8, end: 1.0).animate(
-                      CurvedAnimation(
-                        parent: sendButtonController,
-                        curve: Curves.easeOut,
-                      ),
-                    ),
-                    child: IconButton(
-                      key: const ValueKey('send'),
-                      icon: const Icon(Icons.send),
-                      color: Colors.blue,
-                      onPressed: onSendMessage,
-                    ),
+                ? IconButton(
+                    key: const ValueKey('send'),
+                    icon: const Icon(Icons.send),
+                    color: Colors.blue,
+                    onPressed: onSendMessage,
                   )
                 : IconButton(
                     key: const ValueKey('mic'),
                     icon: const Icon(Icons.mic),
                     color: Colors.blue,
-                    onPressed: _startVoiceRecording,
+                    onPressed: () => _startVoiceRecording(context),
                   ),
           ),
         ],
@@ -139,15 +130,50 @@ class ChatInput extends StatelessWidget {
     );
   }
 
-  void _showAttachmentOptions() {
-    // TODO: Implement attachment options
+  void _showAttachmentOptions(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (_) => Container(
+        height: 150,
+        padding: const EdgeInsets.all(16),
+        child: const Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Attachment Options",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 10),
+            Row(
+              children: [
+                Icon(Icons.photo, color: Colors.blue),
+                SizedBox(width: 8),
+                Text("Send Photo"),
+              ],
+            ),
+            SizedBox(height: 10),
+            Row(
+              children: [
+                Icon(Icons.location_pin, color: Colors.red),
+                SizedBox(width: 8),
+                Text("Share Location"),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
-  void _showEmojiPicker() {
-    // TODO: Implement emoji picker
+  void _showEmojiPicker(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Emoji picker feature coming soon!')),
+    );
   }
 
-  void _startVoiceRecording() {
-    // TODO: Implement voice recording
+  void _startVoiceRecording(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Voice recording feature coming soon!')),
+    );
   }
 }

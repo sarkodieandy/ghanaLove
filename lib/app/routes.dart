@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 // Screens
+import '../core/widgets/messagesScreen.dart';
+import '../core/widgets/profile_screen_widget.dart';
 import '../features/auth/presentation/auth_screen.dart';
 import '../features/auth/presentation/login_screen.dart';
 import '../features/chat/presentation/chat_screen.dart';
@@ -10,7 +12,7 @@ import '../features/onboarding/presentation/onboarding_screen.dart';
 import '../features/premium/presentation/add_transaction.dart';
 import '../features/premium/presentation/premium_screen.dart';
 import '../features/profile/presentation/profile_creation_screen.dart';
-import '../features/profile/presentation/profile_screen.dart';
+import '../features/profile/presentation/user_settings_screen .dart';
 import '../features/safety/presentation/safety_screen.dart';
 import '../features/settings/presentation/BlockedUsersScreen.dart';
 import '../features/settings/presentation/MobileMoneySettingsScreen.dart';
@@ -21,7 +23,6 @@ import '../features/settings/presentation/visibility_settings_screen.dart';
 import '../features/splash/presentation/splash_screen.dart';
 import '../features/nearby/presentation/nearby_screen.dart';
 
-/// Static route map
 final Map<String, WidgetBuilder> appRoutes = {
   '/splash': (context) => const SplashScreen(),
   '/onboarding': (context) => const OnboardingScreen(),
@@ -40,9 +41,9 @@ final Map<String, WidgetBuilder> appRoutes = {
   '/settings/blocked': (context) => const BlockedUsersScreen(),
   '/settings/help': (context) => const HelpAndSupportScreen(),
   '/safety': (context) => const SafetyScreen(),
+  '/messages': (context) => MessagesScreen(),
 };
 
-/// Handles dynamic routes like `/chat/:id` or `/profile/:id`
 Route<dynamic>? onGenerateRoute(RouteSettings settings) {
   final uri = Uri.parse(settings.name ?? '');
 
@@ -58,11 +59,25 @@ Route<dynamic>? onGenerateRoute(RouteSettings settings) {
 
     if (uri.pathSegments[0] == 'profile') {
       return MaterialPageRoute(
-        builder: (context) => User_settings_Screen(
+        builder: (context) => ProfileScreen(
           userId: id,
-          location: '',
-          age: 0,
           name: '',
+          age: 0,
+          location: '',
+          bio: '',
+          photo: '',
+        ),
+        settings: settings,
+      );
+    }
+
+    if (uri.pathSegments[0] == 'settings_user') {
+      return MaterialPageRoute(
+        builder: (context) => UserSettingsScreen(
+          userId: id,
+          name: '',
+          age: 0,
+          location: '',
           bio: '',
           photo: '',
         ),
@@ -71,7 +86,6 @@ Route<dynamic>? onGenerateRoute(RouteSettings settings) {
     }
   }
 
-  // Unknown route fallback
   return MaterialPageRoute(
     builder: (context) =>
         const Scaffold(body: Center(child: Text('404 - Page Not Found'))),

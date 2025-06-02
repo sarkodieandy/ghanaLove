@@ -6,7 +6,6 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/widgets/profile_screen_widget.dart';
 import '../../../core/widgets/user_card.dart';
 import '../models/user_model.dart';
-import '../../profile/presentation/profile_screen.dart';
 
 class NearbyScreen extends StatelessWidget {
   NearbyScreen({super.key});
@@ -21,7 +20,7 @@ class NearbyScreen extends StatelessWidget {
       longitude: -0.1974,
     ),
     UserModel(
-      name: "Kwame",
+      name: "Ella ",
       age: 28,
       location: "Kumasi",
       imageUrl: "assets/images/home2.png",
@@ -37,7 +36,7 @@ class NearbyScreen extends StatelessWidget {
       longitude: -1.7590,
     ),
     UserModel(
-      name: "Yaw",
+      name: "Akua",
       age: 30,
       location: "Sunyani",
       imageUrl: "assets/images/home1.png",
@@ -53,7 +52,7 @@ class NearbyScreen extends StatelessWidget {
       longitude: -0.8539,
     ),
     UserModel(
-      name: "Kojo",
+      name: "Angela ",
       age: 27,
       location: "Ho",
       imageUrl: "assets/images/home3.png",
